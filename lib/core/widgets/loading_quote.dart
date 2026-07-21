@@ -80,11 +80,11 @@ class _LoadingQuoteState extends State<LoadingQuote> {
                 if (widget.label != null)
                   Text(
                     widget.label!.toUpperCase(),
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: primary, letterSpacing: 0.4),
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: primary, letterSpacing: 0.4),
                   ),
-                Text('"${q.text}"', style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 13, height: 1.4)),
+                Text('"${q.text}"', style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 15, height: 1.4)),
                 const SizedBox(height: 2),
-                Text('— ${q.author}', style: TextStyle(fontSize: 11, color: colors.mutedForeground, fontWeight: FontWeight.w500)),
+                Text('— ${q.author}', style: TextStyle(fontSize: 13, color: colors.mutedForeground, fontWeight: FontWeight.w500)),
               ],
             ),
           ),

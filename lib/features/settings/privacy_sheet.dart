@@ -134,8 +134,8 @@ class _PrivacySheetState extends State<PrivacySheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Data & Privacy', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-          Text('Your data stays yours. Manage security, exports and deletion here.', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+          const Text('Data & Privacy', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+          Text('Your data stays yours. Manage security, exports and deletion here.', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(12),
@@ -144,35 +144,35 @@ class _PrivacySheetState extends State<PrivacySheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(children: [
-                  Icon(Icons.shield_outlined, size: 16, color: Theme.of(context).colorScheme.primary),
+                  Icon(Icons.shield_outlined, size: 18, color: Theme.of(context).colorScheme.primary),
                   const SizedBox(width: 6),
-                  Text('End-to-end secure', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.primary)),
+                  Text('End-to-end secure', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: Theme.of(context).colorScheme.primary)),
                 ]),
                 const SizedBox(height: 6),
                 const Text(
                   'Your data is stored on our encrypted backend and protected by row-level security — only you can read it. Recovery details below are hashed on this device before being saved.',
-                  style: TextStyle(fontSize: 12),
+                  style: TextStyle(fontSize: 14),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          const Text('Recovery information', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+          const Text('Recovery information', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
           const SizedBox(height: 10),
-          Text('RECOVERY EMAIL', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
+          Text('RECOVERY EMAIL', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
           const SizedBox(height: 6),
           TextField(controller: _recoveryEmail, decoration: const InputDecoration(hintText: 'backup@email.com')),
           const SizedBox(height: 10),
-          Text('RECOVERY PHONE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
+          Text('RECOVERY PHONE', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
           const SizedBox(height: 6),
           TextField(controller: _recoveryPhone, decoration: const InputDecoration(hintText: '+91 98••• •••••')),
           const SizedBox(height: 10),
-          Text(_passphraseHash != null ? 'RECOVERY PASSPHRASE · SET' : 'RECOVERY PASSPHRASE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
+          Text(_passphraseHash != null ? 'RECOVERY PASSPHRASE · SET' : 'RECOVERY PASSPHRASE', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
           const SizedBox(height: 6),
           TextField(controller: _pass, obscureText: true, decoration: InputDecoration(hintText: _passphraseHash != null ? 'Enter to replace' : 'Min. 6 characters')),
           Padding(
             padding: const EdgeInsets.only(top: 4),
-            child: Text('Hashed with SHA-256 on your device. We never see the raw value.', style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+            child: Text('Hashed with SHA-256 on your device. We never see the raw value.', style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
           ),
           const SizedBox(height: 12),
           SizedBox(
@@ -181,7 +181,7 @@ class _PrivacySheetState extends State<PrivacySheet> {
             child: FilledButton(onPressed: _saving ? null : _saveRecovery, child: _saving ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Text('Save privacy settings')),
           ),
           const SizedBox(height: 20),
-          const Text('Your data', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+          const Text('Your data', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
           const SizedBox(height: 10),
           InkWell(
             onTap: _exporting ? null : _exportData,
@@ -194,8 +194,8 @@ class _PrivacySheetState extends State<PrivacySheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Export my data', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
-                      Text("Download a JSON copy of everything you've saved.", style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+                      const Text('Export my data', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                      Text("Download a JSON copy of everything you've saved.", style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
                     ],
                   ),
                 ),
@@ -215,8 +215,8 @@ class _PrivacySheetState extends State<PrivacySheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Delete all my records', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.error)),
-                      Text('Erases expenses and personal events. Cannot be undone.', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.error.withValues(alpha: 0.8))),
+                      Text('Delete all my records', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: Theme.of(context).colorScheme.error)),
+                      Text('Erases expenses and personal events. Cannot be undone.', style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.error.withValues(alpha: 0.8))),
                     ],
                   ),
                 ),
@@ -225,7 +225,7 @@ class _PrivacySheetState extends State<PrivacySheet> {
             ),
           ),
           const SizedBox(height: 16),
-          Text('MoneyPilot never sells your data. Read our privacy commitment in the app footer.', textAlign: TextAlign.center, style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+          Text('MoneyPilot never sells your data. Read our privacy commitment in the app footer.', textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
         ],
       ),
     );

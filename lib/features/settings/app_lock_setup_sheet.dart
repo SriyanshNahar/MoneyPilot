@@ -26,8 +26,8 @@ class _AppLockSetupSheetState extends ConsumerState<AppLockSetupSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('App Lock', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-          Text('Set PIN, Pattern or Biometric — all three work independently.', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+          const Text('App Lock', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+          Text('Set PIN, Pattern or Biometric — all three work independently.', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(4),
@@ -64,7 +64,7 @@ class _TabBtn extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(color: active ? colors.card : null, borderRadius: BorderRadius.circular(10)),
         alignment: Alignment.center,
-        child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: active ? null : colors.mutedForeground)),
+        child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: active ? null : colors.mutedForeground)),
       ),
     );
   }
@@ -99,15 +99,15 @@ class _PinSetupState extends ConsumerState<_PinSetup> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(children: [
-          const Icon(Icons.key_outlined, size: 16),
+          const Icon(Icons.key_outlined, size: 18),
           const SizedBox(width: 8),
-          const Text('4-digit PIN', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+          const Text('4-digit PIN', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
           if (_enabled) ...[
             const Spacer(),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(color: context.colors.primaryTint, borderRadius: BorderRadius.circular(999)),
-              child: Text('Active', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary)),
+              child: Text('Active', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary)),
             ),
           ],
         ]),
@@ -118,7 +118,7 @@ class _PinSetupState extends ConsumerState<_PinSetup> {
           keyboardType: TextInputType.number,
           maxLength: 4,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 22, letterSpacing: 10),
+          style: const TextStyle(fontSize: 24, letterSpacing: 10),
           decoration: const InputDecoration(counterText: '', hintText: '••••'),
           onChanged: (_) => setState(() {}),
         ),
@@ -186,14 +186,14 @@ class _PatternSetupState extends ConsumerState<_PatternSetup> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(children: [
-          const Icon(Icons.grid_view_outlined, size: 16),
+          const Icon(Icons.grid_view_outlined, size: 18),
           const SizedBox(width: 8),
-          const Expanded(child: Text('Tap dots in sequence (min 4)', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13))),
+          const Expanded(child: Text('Tap dots in sequence (min 4)', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15))),
           if (_enabled)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(color: colors.primaryTint, borderRadius: BorderRadius.circular(999)),
-              child: Text('Active', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary)),
+              child: Text('Active', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary)),
             ),
         ]),
         const SizedBox(height: 10),
@@ -221,7 +221,7 @@ class _PatternSetupState extends ConsumerState<_PatternSetup> {
                       border: Border.all(color: active ? Theme.of(context).colorScheme.primary : colors.border, width: 2),
                     ),
                     alignment: Alignment.center,
-                    child: Text(active ? '${order + 1}' : '', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: active ? Colors.white : null)),
+                    child: Text(active ? '${order + 1}' : '', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: active ? Colors.white : null)),
                   ),
                 );
               }),
@@ -323,15 +323,15 @@ class _BiometricSetupState extends ConsumerState<_BiometricSetup> {
     return Column(
       children: [
         Container(
-          width: 72,
-          height: 72,
+          width: 80,
+          height: 80,
           decoration: BoxDecoration(color: colors.primaryTint, shape: BoxShape.circle),
-          child: Icon(Icons.fingerprint, size: 36, color: Theme.of(context).colorScheme.primary),
+          child: Icon(Icons.fingerprint, size: 40, color: Theme.of(context).colorScheme.primary),
         ),
         const SizedBox(height: 10),
-        const Text('Use fingerprint or Face ID', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+        const Text('Use fingerprint or Face ID', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
         const SizedBox(height: 4),
-        Text(statusText, textAlign: TextAlign.center, style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+        Text(statusText, textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
         const SizedBox(height: 14),
         SizedBox(
           width: double.infinity,

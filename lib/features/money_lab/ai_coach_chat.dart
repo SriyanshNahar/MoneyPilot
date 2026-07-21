@@ -101,7 +101,7 @@ class _AiCoachChatState extends State<AiCoachChat> {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   minimumSize: Size.zero,
                 ),
-                child: Text(p, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)),
+                child: Text(p, style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.primary)),
               );
             }).toList(),
           ),
@@ -112,7 +112,7 @@ class _AiCoachChatState extends State<AiCoachChat> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(color: colors.destructiveTint, borderRadius: BorderRadius.circular(10)),
-              child: Text(_error!, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.error)),
+              child: Text(_error!, style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.error)),
             ),
           ),
         const SizedBox(height: 10),
@@ -134,7 +134,7 @@ class _AiCoachChatState extends State<AiCoachChat> {
               style: FilledButton.styleFrom(padding: EdgeInsets.zero, shape: const CircleBorder()),
               child: _busy
                   ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : const Icon(Icons.send, size: 18),
+                  : const Icon(Icons.send, size: 20),
             ),
           ),
         ]),
@@ -171,7 +171,7 @@ class _ChatBubble extends StatelessWidget {
                 bottomRight: Radius.circular(isUser ? 4 : 16),
               ),
             ),
-            child: Text(content, style: TextStyle(fontSize: 13, height: 1.4, color: isUser ? scheme.onPrimary : null)),
+            child: Text(content, style: TextStyle(fontSize: 15, height: 1.4, color: isUser ? scheme.onPrimary : null)),
           ),
         ),
         if (isUser) const SizedBox(width: 6),
@@ -184,7 +184,7 @@ class _ChatBubble extends StatelessWidget {
     return CircleAvatar(
       radius: 12,
       backgroundColor: isUser ? scheme.primary : colors.primaryTint,
-      child: Icon(isUser ? Icons.person : Icons.smart_toy_outlined, size: 13, color: isUser ? scheme.onPrimary : scheme.primary),
+      child: Icon(isUser ? Icons.person : Icons.smart_toy_outlined, size: 15, color: isUser ? scheme.onPrimary : scheme.primary),
     );
   }
 }

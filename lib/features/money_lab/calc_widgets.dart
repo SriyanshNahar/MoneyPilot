@@ -26,15 +26,15 @@ class CalcShell extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(color: colors.primaryTint, borderRadius: BorderRadius.circular(12)),
-              child: Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
+              child: Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
-                  Text(subtitle, style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+                  Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+                  Text(subtitle, style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
                 ],
               ),
             ),
@@ -113,12 +113,12 @@ class _NumFieldState extends State<NumField> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(widget.label, style: const TextStyle(fontSize: 12)),
+            Text(widget.label, style: const TextStyle(fontSize: 14)),
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: _controller,
               builder: (context, value, _) {
                 final n = double.tryParse(value.text) ?? 0;
-                return Text(_display(n), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: primary));
+                return Text(_display(n), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: primary));
               },
             ),
           ],
@@ -129,7 +129,7 @@ class _NumFieldState extends State<NumField> {
           child: TextField(
             controller: _controller,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            style: const TextStyle(fontSize: 13),
+            style: const TextStyle(fontSize: 15),
             decoration: const InputDecoration(isDense: true, contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8)),
             onChanged: (v) => widget.onChanged(double.tryParse(v) ?? 0),
           ),
@@ -158,9 +158,9 @@ class CalcResult extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label.toUpperCase(), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.3)),
+          Text(label.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.3)),
           const SizedBox(height: 2),
-          Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: primary ? scheme.primary : null)),
+          Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: primary ? scheme.primary : null)),
         ],
       ),
     );

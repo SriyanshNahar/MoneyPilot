@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/quotes/finance_quotes.dart';
+import '../../core/quotes/quote_picker.dart';
 import 'auth_controller.dart';
 
 /// Direct port of src/components/SplashScreen.tsx + routes/index.tsx's
@@ -18,6 +20,7 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
   bool _minTimeElapsed = false;
+  FinanceQuote? _quote;
   late final AnimationController _controller;
 
   @override
@@ -28,6 +31,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
       if (!mounted) return;
       setState(() => _minTimeElapsed = true);
       _maybeNavigate();
+    });
+    // Bundled locally (lib/core/quotes/finance_quotes.dart) — always
+    // available even with zero connectivity, so there's nothing to
+    // actually "fall back" from; local is the only source, on purpose.
+    pickSplashQuote().then((q) {
+      if (mounted) setState(() => _quote = q);
     });
   }
 
@@ -93,19 +102,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
             const SizedBox(height: 32),
             const Text(
               'MoneyPilot',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: Color(0xFF0F172A), letterSpacing: -0.5),
+              style: TextStyle(fontSize: 34, fontWeight: FontWeight.w800, color: Color(0xFF0F172A), letterSpacing: -0.5),
             ),
             const SizedBox(height: 8),
             const Text(
               'Smart money, simply managed.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Color(0xFF475569)),
+              style: TextStyle(fontSize: 16, color: Color(0xFF475569)),
             ),
             const SizedBox(height: 4),
             const Text.rich(
               TextSpan(
                 text: 'A smart money app by ',
-                style: TextStyle(fontSize: 14, color: Color(0xFF475569)),
+                style: TextStyle(fontSize: 16, color: Color(0xFF475569)),
                 children: [
                   TextSpan(
                     text: 'Seven Sapience.',
@@ -115,7 +124,38 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 28),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              child: _quote == null
+                  ? const SizedBox(height: 54)
+                  : Padding(
+                      key: ValueKey(_quote!.text),
+                      padding: const EdgeInsets.symmetric(horizontal: 36),
+                      child: Column(
+                        children: [
+                          Text(
+                            '“${_quote!.text}”',
+                            textAlign: TextAlign.center,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontStyle: FontStyle.italic,
+                              color: Color(0xFF334155),
+                              height: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            '— ${_quote!.author}',
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF059669)),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 24),
             SizedBox(
               width: 96,
               height: 4,

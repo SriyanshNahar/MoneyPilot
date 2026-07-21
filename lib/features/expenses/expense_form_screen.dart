@@ -317,13 +317,13 @@ class _ExpenseFormScreenState extends ConsumerState<ExpenseFormScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 96,
-                      height: 96,
+                      width: 104,
+                      height: 104,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: LinearGradient(colors: [colors.gradientStart, colors.gradientEnd]),
                       ),
-                      child: const Icon(Icons.check, color: Colors.white, size: 48),
+                      child: const Icon(Icons.check, color: Colors.white, size: 52),
                     ),
                     const SizedBox(height: 16),
                     Text(_isEvent ? 'Event saved' : 'Expense added', style: Theme.of(context).textTheme.titleLarge),
@@ -350,7 +350,7 @@ class _FieldGroup extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
+        Text(label.toUpperCase(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
         const SizedBox(height: 6),
         child,
       ],
@@ -373,7 +373,7 @@ class _CategoryDropdown extends StatelessWidget {
       items.add(DropdownMenuItem<String>(
         enabled: false,
         value: '__group_$group',
-        child: Text(group, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+        child: Text(group, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
       ));
       for (final c in catsInGroup) {
         items.add(DropdownMenuItem<String>(value: c.key, child: Padding(padding: const EdgeInsets.only(left: 8), child: Text(c.label))));

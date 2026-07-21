@@ -133,7 +133,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        icon: Icon(Icons.warning_amber_rounded, color: Theme.of(ctx).colorScheme.error, size: 32),
+        icon: Icon(Icons.warning_amber_rounded, color: Theme.of(ctx).colorScheme.error, size: 36),
         title: const Text('Delete this entry?', textAlign: TextAlign.center),
         content: const Text(
           'This cannot be undone. The entry will be removed from your Activity permanently.',
@@ -202,7 +202,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
           return ListView(
             children: [
               Text('Activity', style: Theme.of(context).textTheme.headlineMedium),
-              Text('Your full ledger, grouped by category.', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+              Text('Your full ledger, grouped by category.', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
               const SizedBox(height: 14),
               Row(children: [
                 Expanded(
@@ -210,7 +210,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                     height: 46,
                     child: FilledButton.icon(
                       onPressed: () => context.push('/expenses/new?type=expense'),
-                      icon: const Icon(Icons.add, size: 18),
+                      icon: const Icon(Icons.add, size: 20),
                       label: const Text('Add expense'),
                     ),
                   ),
@@ -226,7 +226,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                       ),
                       child: TextButton.icon(
                         onPressed: () => context.push('/expenses/new?type=event'),
-                        icon: const Icon(Icons.add, size: 18, color: Colors.white),
+                        icon: const Icon(Icons.add, size: 20, color: Colors.white),
                         label: const Text('Add event', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
                       ),
                     ),
@@ -235,7 +235,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
               ]),
               const SizedBox(height: 12),
               TextField(
-                decoration: const InputDecoration(hintText: 'Search name or sub-category…', prefixIcon: Icon(Icons.search, size: 20)),
+                decoration: const InputDecoration(hintText: 'Search name or sub-category…', prefixIcon: Icon(Icons.search, size: 22)),
                 onChanged: (v) => setState(() => _query = v),
               ),
               const SizedBox(height: 10),
@@ -254,9 +254,9 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('TOTAL SHOWN', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
+                    Text('TOTAL SHOWN', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
                     Text(formatINRCompact(total), style: Theme.of(context).textTheme.headlineMedium),
-                    Text('${formatINR(total)} · ${filtered.length} entries', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+                    Text('${formatINR(total)} · ${filtered.length} entries', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
                   ],
                 ),
               ),
@@ -269,7 +269,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                     const SizedBox(height: 8),
                     TextButton.icon(
                       onPressed: () => context.push('/expenses/new'),
-                      icon: const Icon(Icons.add, size: 16),
+                      icon: const Icon(Icons.add, size: 18),
                       label: const Text('Add your first expense', style: TextStyle(fontWeight: FontWeight.w700)),
                     ),
                   ]),
@@ -295,11 +295,11 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(children: [
-          Container(width: 32, height: 32, decoration: BoxDecoration(color: meta.bg, borderRadius: BorderRadius.circular(12)), child: Icon(lucideIcon(meta.icon), size: 16, color: meta.color)),
+          Container(width: 36, height: 36, decoration: BoxDecoration(color: meta.bg, borderRadius: BorderRadius.circular(13)), child: Icon(lucideIcon(meta.icon), size: 18, color: meta.color)),
           const SizedBox(width: 8),
-          Text(bucket, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
+          Text(bucket, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
           const Spacer(),
-          Text('${rows.length} · ${formatINRCompact(sum)}', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
+          Text('${rows.length} · ${formatINRCompact(sum)}', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
         ]),
         const SizedBox(height: 8),
         for (final r in rows) ...[_buildRow(context, r), const SizedBox(height: 8)],
@@ -321,33 +321,33 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(r.note ?? r.subCategory ?? 'Expense', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15), overflow: TextOverflow.ellipsis),
+                Text(r.note ?? r.subCategory ?? 'Expense', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 17), overflow: TextOverflow.ellipsis),
                 if (r.subCategory != null && r.note != null)
-                  Text(r.subCategory!, style: TextStyle(fontSize: 12, color: colors.mutedForeground), overflow: TextOverflow.ellipsis),
+                  Text(r.subCategory!, style: TextStyle(fontSize: 14, color: colors.mutedForeground), overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 6),
                 Wrap(
                   spacing: 8,
                   runSpacing: 4,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Text(formatDateIN(r.expenseDate), style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+                    Text(formatDateIN(r.expenseDate), style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
                     if (!isEvent)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(999)),
-                        child: Text(r.paymentMethod.toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
+                        child: Text(r.paymentMethod.toUpperCase(), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
                       ),
                     if (isEvent)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(color: const Color(0xFFFCE7F3), borderRadius: BorderRadius.circular(999)),
-                        child: const Text('EVENT', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFFBE185D))),
+                        child: const Text('EVENT', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFFBE185D))),
                       )
                     else
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(color: paid ? const Color(0xFFD1FAE5) : const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(999)),
-                        child: Text(paid ? 'PAID' : 'BALANCE', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: paid ? const Color(0xFF047857) : const Color(0xFFB45309))),
+                        child: Text(paid ? 'PAID' : 'BALANCE', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: paid ? const Color(0xFF047857) : const Color(0xFFB45309))),
                       ),
                   ],
                 ),
@@ -361,7 +361,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
               const SizedBox(height: 6),
               IconButton(
                 onPressed: _deletingId == r.id ? null : () => _confirmAndDelete(r.id),
-                icon: const Icon(Icons.delete_outline, size: 20),
+                icon: const Icon(Icons.delete_outline, size: 22),
                 visualDensity: VisualDensity.compact,
                 color: colors.mutedForeground,
               ),

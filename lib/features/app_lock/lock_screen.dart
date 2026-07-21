@@ -113,16 +113,16 @@ class _LockScreenState extends ConsumerState<LockScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 64,
-                  height: 64,
-                  decoration: BoxDecoration(color: colors.primaryTint, borderRadius: BorderRadius.circular(20)),
-                  child: Icon(Icons.lock_outline, color: Theme.of(context).colorScheme.primary, size: 32),
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(color: colors.primaryTint, borderRadius: BorderRadius.circular(22)),
+                  child: Icon(Icons.lock_outline, color: Theme.of(context).colorScheme.primary, size: 36),
                 ),
                 const SizedBox(height: 16),
                 Text('App locked', style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 4),
                 Text("Verify it's you to continue",
-                    style: TextStyle(color: colors.mutedForeground, fontSize: 14)),
+                    style: TextStyle(color: colors.mutedForeground, fontSize: 16)),
                 if (_available.length > 1) ...[
                   const SizedBox(height: 20),
                   Container(
@@ -149,7 +149,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                               backgroundColor: active ? colors.card : null,
                               foregroundColor: active ? Theme.of(context).colorScheme.onSurface : colors.mutedForeground,
                             ),
-                            child: Text(_modeLabel(m), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+                            child: Text(_modeLabel(m), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
                           ),
                         );
                       }).toList(),
@@ -167,7 +167,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 12),
-                  Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 13)),
+                  Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 15)),
                 ],
               ],
             ),
@@ -187,7 +187,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
     return Column(
       children: [
         Row(children: [
-          const Icon(Icons.key_outlined, size: 18),
+          const Icon(Icons.key_outlined, size: 20),
           const SizedBox(width: 8),
           const Text('Enter your 4-digit PIN', style: TextStyle(fontWeight: FontWeight.w600)),
         ]),
@@ -199,7 +199,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
           keyboardType: TextInputType.number,
           maxLength: 4,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 28, letterSpacing: 12),
+          style: const TextStyle(fontSize: 32, letterSpacing: 12),
           decoration: const InputDecoration(counterText: '', hintText: '••••'),
           onChanged: (v) {
             setState(() => _error = null);
@@ -222,7 +222,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
     return Column(
       children: [
         Row(children: const [
-          Icon(Icons.grid_view_outlined, size: 18),
+          Icon(Icons.grid_view_outlined, size: 20),
           SizedBox(width: 8),
           Text('Tap your pattern', style: TextStyle(fontWeight: FontWeight.w600)),
         ]),
@@ -266,7 +266,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                     active ? '${order + 1}' : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 14,
                       color: active ? Theme.of(context).colorScheme.onPrimary : null,
                     ),
                   ),
@@ -291,10 +291,10 @@ class _LockScreenState extends ConsumerState<LockScreen> {
     return Column(
       children: [
         Container(
-          width: 80,
-          height: 80,
+          width: 88,
+          height: 88,
           decoration: BoxDecoration(color: context.colors.primaryTint, shape: BoxShape.circle),
-          child: Icon(Icons.fingerprint, size: 40, color: Theme.of(context).colorScheme.primary),
+          child: Icon(Icons.fingerprint, size: 44, color: Theme.of(context).colorScheme.primary),
         ),
         const SizedBox(height: 12),
         Text(_bioBusy ? 'Waiting for biometric…' : 'Tap to verify', style: const TextStyle(fontWeight: FontWeight.w600)),

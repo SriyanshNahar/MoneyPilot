@@ -91,7 +91,7 @@ class AppShell extends StatelessWidget {
                                   ),
                                   child: Icon(
                                     active ? t.activeIcon : t.icon,
-                                    size: 20,
+                                    size: 22,
                                     color: active ? Theme.of(context).colorScheme.primary : colors.mutedForeground,
                                   ),
                                 ),

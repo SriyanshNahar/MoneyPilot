@@ -241,7 +241,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return ListView(
       children: [
-        Text(greetingForNow().toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 0.6, color: colors.mutedForeground)),
+        Text(greetingForNow().toUpperCase(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, letterSpacing: 0.6, color: colors.mutedForeground)),
         const SizedBox(height: 2),
         Text('$firstName 👋', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 16),
@@ -268,7 +268,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
-          child: Text('Filter applies to expenses & personal events below.', style: TextStyle(fontSize: 10, color: colors.mutedForeground)),
+          child: Text('Filter applies to expenses & personal events below.', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
         ),
         _ReminderList(rows: upcoming, emptyText: 'No expenses due in the next $_windowDays days.', addType: 'expense'),
         const SizedBox(height: 24),
@@ -285,7 +285,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(entry.key.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
+                            Text(entry.key.toUpperCase(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
                             const SizedBox(height: 6),
                             for (final e in entry.value)
                               Padding(
@@ -294,7 +294,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(child: Text(e.personName, style: const TextStyle(fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis)),
-                                    Text(e.eventDate != null ? formatDateIN(e.eventDate) : 'Date not set', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+                                    Text(e.eventDate != null ? formatDateIN(e.eventDate) : 'Date not set', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
                                   ],
                                 ),
                               ),
@@ -325,14 +325,14 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
       child: Row(
         children: [
-          Container(width: 28, height: 28, decoration: BoxDecoration(color: tint, borderRadius: BorderRadius.circular(8)), child: Icon(icon, size: 14, color: tintFg)),
+          Container(width: 32, height: 32, decoration: BoxDecoration(color: tint, borderRadius: BorderRadius.circular(9)), child: Icon(icon, size: 16, color: tintFg)),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
-                Text(subtitle, style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+                Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                Text(subtitle, style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
               ],
             ),
           ),
@@ -343,28 +343,65 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
+/// Apple-style popup: solid white surface, black text, generous padding,
+/// soft rounded corners and a real drop shadow — independent of app theme
+/// (including dark mode), matching an iOS context-menu/action-sheet feel
+/// rather than a stock Material dropdown.
 class _WindowPicker extends StatelessWidget {
   const _WindowPicker({required this.value, required this.onChanged});
   final int value;
   final ValueChanged<int> onChanged;
 
+  static const _options = [2, 7, 10, 30];
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return Container(
-      height: 32,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(color: colors.card, border: Border.all(color: colors.border), borderRadius: BorderRadius.circular(999)),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<int>(
-          value: value,
-          isDense: true,
-          icon: Icon(Icons.expand_more, size: 16, color: colors.mutedForeground),
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-          items: const [2, 7, 10, 30].map((d) => DropdownMenuItem(value: d, child: Text('Next $d days'))).toList(),
-          onChanged: (v) {
-            if (v != null) onChanged(v);
-          },
+    return PopupMenuButton<int>(
+      initialValue: value,
+      onSelected: onChanged,
+      offset: const Offset(0, 40),
+      color: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      elevation: 16,
+      shadowColor: Colors.black.withValues(alpha: 0.35),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: Colors.black.withValues(alpha: 0.06)),
+      ),
+      constraints: const BoxConstraints(minWidth: 176),
+      itemBuilder: (context) => [
+        for (final d in _options)
+          PopupMenuItem<int>(
+            value: d,
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Next $d days',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: d == value ? FontWeight.w700 : FontWeight.w500,
+                    color: Colors.black,
+                  ),
+                ),
+                if (d == value) const Icon(Icons.check, size: 18, color: Colors.black),
+              ],
+            ),
+          ),
+      ],
+      child: Container(
+        height: 36,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(color: colors.card, border: Border.all(color: colors.border), borderRadius: BorderRadius.circular(999)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Next $value days', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+            const SizedBox(width: 4),
+            Icon(Icons.expand_more, size: 18, color: colors.mutedForeground),
+          ],
         ),
       ),
     );
@@ -377,8 +414,8 @@ class _AddEventLink extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton.icon(
       onPressed: () => context.push('/expenses/new?type=event'),
-      icon: const Icon(Icons.add, size: 14),
-      label: const Text('Add event', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+      icon: const Icon(Icons.add, size: 16),
+      label: const Text('Add event', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
       style: TextButton.styleFrom(
         backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -421,9 +458,9 @@ class _ReminderList extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(r.name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14), overflow: TextOverflow.ellipsis),
+                    Text(r.name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16), overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 2),
-                    Text('${formatDateIN(r.dueDate)} · ${r.mode}', style: TextStyle(fontSize: 11, color: colors.mutedForeground), overflow: TextOverflow.ellipsis),
+                    Text('${formatDateIN(r.dueDate)} · ${r.mode}', style: TextStyle(fontSize: 13, color: colors.mutedForeground), overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),
@@ -431,12 +468,12 @@ class _ReminderList extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(r.amount == null ? '' : formatINR(r.amount), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  Text(r.amount == null ? '' : formatINR(r.amount), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
                   const SizedBox(height: 4),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(color: badgeBg, borderRadius: BorderRadius.circular(999)),
-                    child: Text(r.status.toUpperCase(), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: badgeFg, letterSpacing: 0.4)),
+                    child: Text(r.status.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: badgeFg, letterSpacing: 0.4)),
                   ),
                 ],
               ),
@@ -460,11 +497,11 @@ class _EmptyRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 28),
       child: Column(
         children: [
-          Text(text, style: TextStyle(color: colors.mutedForeground, fontSize: 13), textAlign: TextAlign.center),
+          Text(text, style: TextStyle(color: colors.mutedForeground, fontSize: 15), textAlign: TextAlign.center),
           const SizedBox(height: 8),
           TextButton.icon(
             onPressed: () => context.push('/expenses/new?type=$addType'),
-            icon: const Icon(Icons.add, size: 16),
+            icon: const Icon(Icons.add, size: 18),
             label: Text('Add ${addType == 'event' ? 'event' : 'expense'}', style: const TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],

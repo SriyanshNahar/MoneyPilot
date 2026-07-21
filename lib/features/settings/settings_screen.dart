@@ -120,10 +120,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('SIGNED IN AS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: colors.mutedForeground, letterSpacing: 0.6)),
+                        Text('SIGNED IN AS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: colors.mutedForeground, letterSpacing: 0.6)),
                         const SizedBox(height: 4),
-                        Text(displayName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800), overflow: TextOverflow.ellipsis),
-                        Text(user?.email ?? '', style: TextStyle(fontSize: 13, color: colors.mutedForeground), overflow: TextOverflow.ellipsis),
+                        Text(displayName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800), overflow: TextOverflow.ellipsis),
+                        Text(user?.email ?? '', style: TextStyle(fontSize: 15, color: colors.mutedForeground), overflow: TextOverflow.ellipsis),
                       ],
                     ),
                   ),
@@ -134,7 +134,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         radius: 28,
                         backgroundColor: colors.card,
                         backgroundImage: _avatarUrl != null ? NetworkImage(_avatarUrl!) : null,
-                        child: _avatarUrl == null ? Text(displayName[0].toUpperCase(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: scheme.primary)) : null,
+                        child: _avatarUrl == null ? Text(displayName[0].toUpperCase(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: scheme.primary)) : null,
                       ),
                       if (_uploadingAvatar)
                         const Positioned.fill(child: DecoratedBox(decoration: BoxDecoration(color: Colors.black38, shape: BoxShape.circle), child: Center(child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))))),
@@ -144,7 +144,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(color: scheme.primary, shape: BoxShape.circle, border: Border.all(color: colors.card, width: 2)),
-                          child: const Icon(Icons.camera_alt, size: 12, color: Colors.white),
+                          child: const Icon(Icons.camera_alt, size: 14, color: Colors.white),
                         ),
                       ),
                     ]),
@@ -159,8 +159,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('ACCOUNT PLAN', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: colors.mutedForeground, letterSpacing: 0.6)),
-                          Text(isPro ? 'MoneyPilot Pro' : 'Free plan', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+                          Text('ACCOUNT PLAN', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: colors.mutedForeground, letterSpacing: 0.6)),
+                          Text(isPro ? 'MoneyPilot Pro' : 'Free plan', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
                         ],
                       ),
                     ),
@@ -171,7 +171,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         color: isPro ? null : colors.mutedForeground.withValues(alpha: 0.6),
                         borderRadius: BorderRadius.circular(999),
                       ),
-                      child: Text(isPro ? 'PRO' : 'FREE', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white)),
+                      child: Text(isPro ? 'PRO' : 'FREE', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white)),
                     ),
                   ]),
                 ),
@@ -202,7 +202,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          Text('MoneyPilot · v0.4 · A smart money app by Seven Sapience.', textAlign: TextAlign.center, style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+          Text('MoneyPilot · v0.4 · A smart money app by Seven Sapience.', textAlign: TextAlign.center, style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
           const SizedBox(height: 24),
         ],
       ),
@@ -216,10 +216,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(children: [
-          Container(width: 36, height: 36, decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.6), shape: BoxShape.circle), child: Icon(icon, size: 17, color: color)),
+          Container(width: 40, height: 40, decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.6), shape: BoxShape.circle), child: Icon(icon, size: 19, color: color)),
           const SizedBox(width: 10),
-          Expanded(child: Text(label, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: danger ? Theme.of(context).colorScheme.error : null))),
-          if (!danger) Icon(Icons.chevron_right, size: 18, color: context.colors.mutedForeground),
+          Expanded(child: Text(label, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: danger ? Theme.of(context).colorScheme.error : null))),
+          if (!danger) Icon(Icons.chevron_right, size: 20, color: context.colors.mutedForeground),
         ]),
       ),
     );

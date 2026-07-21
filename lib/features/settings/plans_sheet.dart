@@ -124,8 +124,8 @@ class _PlansSheetState extends ConsumerState<PlansSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Choose your plan', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-          Text('Unlock WhatsApp & SMS alerts, exports and more.', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+          const Text('Choose your plan', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+          Text('Unlock WhatsApp & SMS alerts, exports and more.', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
           const SizedBox(height: 16),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +142,7 @@ class _PlansSheetState extends ConsumerState<PlansSheet> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Phone number for WhatsApp & SMS alerts', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary)),
+                Text('Phone number for WhatsApp & SMS alerts', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.primary)),
                 const SizedBox(height: 8),
                 Row(children: [
                   Container(
@@ -166,7 +166,7 @@ class _PlansSheetState extends ConsumerState<PlansSheet> {
                 if (_phone.text.isNotEmpty && !_validPhone)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
-                    child: Text('Enter a valid Indian mobile number.', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.error)),
+                    child: Text('Enter a valid Indian mobile number.', style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.error)),
                   ),
               ],
             ),
@@ -178,7 +178,7 @@ class _PlansSheetState extends ConsumerState<PlansSheet> {
               onPressed: (!_validPhone || _paying || isPro) ? null : _pay,
               icon: _paying
                   ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                  : const Icon(Icons.auto_awesome, size: 18),
+                  : const Icon(Icons.auto_awesome, size: 20),
               label: Text(isPro ? "You're on Pro" : 'Pay ₹49 · Unlock Pro for 1 year'),
             ),
           ),
@@ -186,7 +186,7 @@ class _PlansSheetState extends ConsumerState<PlansSheet> {
           Text(
             'Secured by Razorpay · Test mode. Card 4111 1111 1111 1111 · CVV 123 · Exp 12/26.',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 11, color: colors.mutedForeground),
+            style: TextStyle(fontSize: 13, color: colors.mutedForeground),
           ),
         ],
       ),
@@ -223,26 +223,26 @@ class _PlanCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(color: scheme.primary, borderRadius: BorderRadius.circular(999)),
-                child: const Text('POPULAR', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.white)),
+                child: const Text('POPULAR', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Colors.white)),
               ),
             ),
-          Text(name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+          Text(name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
           const SizedBox(height: 4),
           Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
-            Text(price, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
-            Text(suffix, style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+            Text(price, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800)),
+            Text(suffix, style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
           ]),
           const SizedBox(height: 8),
           for (final f in features)
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Icon(Icons.check, size: 14, color: scheme.primary),
+                Icon(Icons.check, size: 16, color: scheme.primary),
                 const SizedBox(width: 4),
-                Expanded(child: Text(f, style: const TextStyle(fontSize: 11))),
+                Expanded(child: Text(f, style: const TextStyle(fontSize: 13))),
               ]),
             ),
-          if (active) Text('Current plan', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: scheme.primary)),
+          if (active) Text('Current plan', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: scheme.primary)),
         ],
       ),
     );

@@ -25,8 +25,8 @@ class ThemeSheet extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Choose theme', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-          Text('Auto follows the app default (light).', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+          const Text('Choose theme', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+          Text('Auto follows the app default (light).', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
           const SizedBox(height: 16),
           Row(
             children: options.map((o) {
@@ -56,7 +56,7 @@ class ThemeSheet extends ConsumerWidget {
                           child: Icon(icon, color: active ? Colors.white : null),
                         ),
                         const SizedBox(height: 8),
-                        Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
+                        Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
                       ]),
                     ),
                   ),
@@ -69,9 +69,9 @@ class ThemeSheet extends ConsumerWidget {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(12)),
             child: Row(children: [
-              Icon(Icons.palette_outlined, size: 14, color: Theme.of(context).colorScheme.primary),
+              Icon(Icons.palette_outlined, size: 16, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 8),
-              Expanded(child: Text('Instagram-inspired gradient palette. Your choice is saved on this device.', style: TextStyle(fontSize: 11, color: colors.mutedForeground))),
+              Expanded(child: Text('Instagram-inspired gradient palette. Your choice is saved on this device.', style: TextStyle(fontSize: 13, color: colors.mutedForeground))),
             ]),
           ),
         ],

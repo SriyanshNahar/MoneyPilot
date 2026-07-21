@@ -103,8 +103,8 @@ class _AlertsSheetState extends ConsumerState<AlertsSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Alert channels', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-          Text('Manage your alert channels.', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+          const Text('Alert channels', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+          Text('Manage your alert channels.', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
           const SizedBox(height: 16),
           _channelToggle(Icons.chat_bubble_outline, 'WhatsApp', _phone.text.isNotEmpty ? '+91${_phone.text}' : 'Add number below', 'whatsapp'),
           const SizedBox(height: 8),
@@ -112,19 +112,19 @@ class _AlertsSheetState extends ConsumerState<AlertsSheet> {
           const SizedBox(height: 8),
           _channelToggle(Icons.mail_outline, 'Email', _email.text.isNotEmpty ? _email.text : 'Add email below', 'email'),
           const SizedBox(height: 16),
-          Text('PHONE (FOR WHATSAPP & SMS)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
+          Text('PHONE (FOR WHATSAPP & SMS)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
           const SizedBox(height: 6),
           TextField(controller: _phone, keyboardType: TextInputType.phone, maxLength: 10, decoration: const InputDecoration(prefixText: '+91  ', counterText: ''), onChanged: (_) => setState(() {})),
           const SizedBox(height: 12),
-          Text('WHATSAPP NUMBER (OPTIONAL)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
+          Text('WHATSAPP NUMBER (OPTIONAL)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
           const SizedBox(height: 6),
           TextField(controller: _whatsapp, keyboardType: TextInputType.phone, maxLength: 10, decoration: const InputDecoration(prefixText: '+91  ', counterText: ''), onChanged: (_) => setState(() {})),
           const SizedBox(height: 12),
-          Text('EMAIL', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
+          Text('EMAIL', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
           const SizedBox(height: 6),
           TextField(controller: _email, keyboardType: TextInputType.emailAddress, onChanged: (_) => setState(() {})),
           const SizedBox(height: 12),
-          Text('TEST MESSAGE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
+          Text('TEST MESSAGE', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
           const SizedBox(height: 6),
           TextField(controller: _message, maxLines: 3, maxLength: 500),
           const SizedBox(height: 12),
@@ -132,7 +132,7 @@ class _AlertsSheetState extends ConsumerState<AlertsSheet> {
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: _saving ? null : _savePrefs,
-                icon: _saving ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.check, size: 16),
+                icon: _saving ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.check, size: 18),
                 label: const Text('Save prefs'),
               ),
             ),
@@ -142,7 +142,7 @@ class _AlertsSheetState extends ConsumerState<AlertsSheet> {
                 onPressed: _busy ? null : _sendTest,
                 icon: _busy
                     ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Icon(Icons.send, size: 16),
+                    : const Icon(Icons.send, size: 18),
                 label: const Text('Send test'),
               ),
             ),
@@ -153,7 +153,7 @@ class _AlertsSheetState extends ConsumerState<AlertsSheet> {
             decoration: BoxDecoration(color: colors.primaryTint.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(12)),
             child: Text.rich(
               TextSpan(
-                style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.primary),
+                style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.primary),
                 children: const [
                   TextSpan(text: 'Daily reminders run at 9:00 AM IST. If you set '),
                   TextSpan(text: 'Remind before 5 days', style: TextStyle(fontWeight: FontWeight.w700)),
@@ -178,14 +178,14 @@ class _AlertsSheetState extends ConsumerState<AlertsSheet> {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(color: colors.card, border: Border.all(color: colors.border), borderRadius: BorderRadius.circular(14)),
         child: Row(children: [
-          Container(width: 34, height: 34, decoration: BoxDecoration(color: colors.primaryTint, borderRadius: BorderRadius.circular(10)), child: Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary)),
+          Container(width: 38, height: 38, decoration: BoxDecoration(color: colors.primaryTint, borderRadius: BorderRadius.circular(11)), child: Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary)),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
-                Text(sub, style: TextStyle(fontSize: 11, color: colors.mutedForeground), overflow: TextOverflow.ellipsis),
+                Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                Text(sub, style: TextStyle(fontSize: 13, color: colors.mutedForeground), overflow: TextOverflow.ellipsis),
               ],
             ),
           ),

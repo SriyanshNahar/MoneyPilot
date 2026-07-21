@@ -91,26 +91,33 @@ class AppTheme {
             fontFamily: 'Inter',
           )
           .copyWith(
+            // Dashboard greeting ("Good Morning" / name) — bumped above the
+            // Material3 default so it reads as the loudest text on screen.
             headlineLarge: base.textTheme.headlineLarge?.copyWith(
               fontFamily: 'Manrope',
               fontFamilyFallback: _displayFontFamilyFallback,
               fontWeight: FontWeight.w800,
+              fontSize: 36,
               letterSpacing: -0.5,
             ),
             headlineMedium: base.textTheme.headlineMedium?.copyWith(
               fontFamily: 'Manrope',
               fontFamilyFallback: _displayFontFamilyFallback,
               fontWeight: FontWeight.w800,
+              fontSize: 30,
               letterSpacing: -0.4,
             ),
+            // Card / section titles.
             titleLarge: base.textTheme.titleLarge?.copyWith(
               fontFamily: 'Manrope',
               fontFamilyFallback: _displayFontFamilyFallback,
               fontWeight: FontWeight.w700,
+              fontSize: 24,
               letterSpacing: -0.3,
             ),
             titleMedium: base.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
+              fontSize: 18,
             ),
           ),
       appBarTheme: AppBarTheme(
@@ -122,7 +129,7 @@ class AppTheme {
           fontFamily: 'Manrope',
           fontFamilyFallback: _displayFontFamilyFallback,
           fontWeight: FontWeight.w700,
-          fontSize: 18,
+          fontSize: 20,
           color: foreground,
         ),
       ),
@@ -157,32 +164,44 @@ class AppTheme {
           borderSide: BorderSide(color: destructive),
         ),
       ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          minimumSize: const Size.fromHeight(48),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radius - 4),
+          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+        ),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: onPrimary,
           disabledBackgroundColor: primary.withValues(alpha: 0.5),
           disabledForegroundColor: onPrimary.withValues(alpha: 0.8),
-          minimumSize: const Size.fromHeight(46),
+          minimumSize: const Size.fromHeight(48),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius - 4),
           ),
-          textStyle: const TextStyle(fontWeight: FontWeight.w700),
+          textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: foreground,
           side: BorderSide(color: colors.border),
-          minimumSize: const Size.fromHeight(46),
+          minimumSize: const Size.fromHeight(48),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius - 4),
           ),
-          textStyle: const TextStyle(fontWeight: FontWeight.w700),
+          textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: primary),
+        style: TextButton.styleFrom(
+          foregroundColor: primary,
+          textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+        ),
       ),
       dividerTheme: DividerThemeData(color: colors.border, space: 1),
       bottomSheetTheme: BottomSheetThemeData(

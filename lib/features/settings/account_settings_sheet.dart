@@ -113,8 +113,8 @@ class _AccountSettingsSheetState extends ConsumerState<AccountSettingsSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Account Settings', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-          Text('Update your name and profile photo shown here.', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+          const Text('Account Settings', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+          Text('Update your name and profile photo shown here.', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(14),
@@ -127,7 +127,7 @@ class _AccountSettingsSheetState extends ConsumerState<AccountSettingsSheet> {
                   backgroundColor: colors.card,
                   backgroundImage: _localAvatarPath != null ? FileImage(File(_localAvatarPath!)) : null,
                   child: _localAvatarPath == null
-                      ? Text(_fullName.isNotEmpty ? _fullName[0].toUpperCase() : 'M', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.primary))
+                      ? Text(_fullName.isNotEmpty ? _fullName[0].toUpperCase() : 'M', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.primary))
                       : null,
                 ),
               ),
@@ -136,17 +136,17 @@ class _AccountSettingsSheetState extends ConsumerState<AccountSettingsSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Profile photo', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
-                    Text('This photo is shown only in Settings.', style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+                    const Text('Profile photo', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                    Text('This photo is shown only in Settings.', style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
                     const SizedBox(height: 6),
                     Row(children: [
-                      TextButton(onPressed: _pickLocalAvatar, style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap), child: Text(_localAvatarPath != null ? 'Change' : 'Add photo', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700))),
+                      TextButton(onPressed: _pickLocalAvatar, style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap), child: Text(_localAvatarPath != null ? 'Change' : 'Add photo', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700))),
                       if (_localAvatarPath != null) ...[
                         const SizedBox(width: 8),
                         TextButton(
                           onPressed: _clearLocalAvatar,
                           style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap, foregroundColor: Theme.of(context).colorScheme.error),
-                          child: const Text('Remove', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                          child: const Text('Remove', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
                         ),
                       ],
                     ]),
@@ -156,15 +156,15 @@ class _AccountSettingsSheetState extends ConsumerState<AccountSettingsSheet> {
             ]),
           ),
           const SizedBox(height: 16),
-          Text('FIRST NAME', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
+          Text('FIRST NAME', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
           const SizedBox(height: 6),
           TextField(controller: _first, decoration: const InputDecoration(hintText: 'e.g. Shriyansh')),
           const SizedBox(height: 12),
-          Text('MIDDLE NAME (OPTIONAL)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
+          Text('MIDDLE NAME (OPTIONAL)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
           const SizedBox(height: 6),
           TextField(controller: _middle, decoration: const InputDecoration(hintText: 'e.g. Kumar')),
           const SizedBox(height: 12),
-          Text('LAST NAME', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
+          Text('LAST NAME', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
           const SizedBox(height: 6),
           TextField(controller: _last, decoration: const InputDecoration(hintText: 'e.g. Nahar'), onChanged: (_) => setState(() {})),
           if (_fullName.isNotEmpty) ...[
@@ -172,7 +172,7 @@ class _AccountSettingsSheetState extends ConsumerState<AccountSettingsSheet> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(color: colors.primaryTint.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(12)),
-              child: Text.rich(TextSpan(text: 'Full name: ', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 12), children: [
+              child: Text.rich(TextSpan(text: 'Full name: ', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 14), children: [
                 TextSpan(text: _fullName, style: const TextStyle(fontWeight: FontWeight.w700)),
               ])),
             ),

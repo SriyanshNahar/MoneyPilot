@@ -30,7 +30,7 @@ class OfflineBanner extends ConsumerWidget {
         children: [
           Icon(
             offline ? Icons.cloud_off_outlined : Icons.sync,
-            size: 16,
+            size: 18,
             color: offline ? scheme.error : const Color(0xFFB45309),
           ),
           const SizedBox(width: 8),
@@ -42,7 +42,7 @@ class OfflineBanner extends ConsumerWidget {
                       : "You're offline — showing your last saved data.")
                   : 'Syncing ${state.pendingWrites} offline entr${state.pendingWrites == 1 ? 'y' : 'ies'}…',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: offline ? scheme.error : const Color(0xFFB45309),
               ),

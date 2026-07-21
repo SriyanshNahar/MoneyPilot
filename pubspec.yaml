@@ -74,8 +74,12 @@ flutter_launcher_icons:
   remove_alpha_ios: true
 
 flutter_native_splash:
+  # Deliberately no `image:` here. This is the native OS launch screen that
+  # shows for a few frames before Flutter/Dart takes over — with a logo it
+  # doubled up as a second, jarring splash right before our own animated
+  # SplashScreen (lib/features/auth/splash_screen.dart). Solid color only
+  # (matching splash_screen.dart's background) makes the handoff invisible:
+  # the user only ever sees ONE splash, the custom MoneyPilot one.
   color: "#F4F6F2"
-  image: assets/icons/app_icon.png
   android_12:
-    image: assets/icons/app_icon.png
     color: "#F4F6F2"

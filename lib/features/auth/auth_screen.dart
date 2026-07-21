@@ -172,8 +172,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('MoneyPilot', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800)),
-                            Text('Smart money, simply managed.', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                            Text('MoneyPilot', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800)),
+                            Text('Smart money, simply managed.', style: TextStyle(color: Colors.white70, fontSize: 15)),
                           ],
                         ),
                       ),
@@ -216,7 +216,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           obscure: !_showPw,
                           helper: _mode == _Mode.signup && _passwordError == null ? 'At least 8 characters, with a letter and a number.' : null,
                           suffix: IconButton(
-                            icon: Icon(_showPw ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 20),
+                            icon: Icon(_showPw ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 22),
                             onPressed: () => setState(() => _showPw = !_showPw),
                           ),
                         ),
@@ -235,7 +235,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           Expanded(child: Divider(color: colors.border)),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Text('OR', style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+                            child: Text('OR', style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
                           ),
                           Expanded(child: Divider(color: colors.border)),
                         ]),
@@ -246,7 +246,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                             child: FilledButton.icon(
                               onPressed: _busy ? null : _onApple,
                               style: FilledButton.styleFrom(backgroundColor: Colors.black, foregroundColor: Colors.white),
-                              icon: const Icon(Icons.apple, size: 22),
+                              icon: const Icon(Icons.apple, size: 24),
                               label: const Text('Continue with Apple'),
                             ),
                           ),
@@ -256,7 +256,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           height: 48,
                           child: OutlinedButton.icon(
                             onPressed: _busy ? null : _onGoogle,
-                            icon: const Icon(Icons.g_mobiledata, size: 26),
+                            icon: const Icon(Icons.g_mobiledata, size: 28),
                             label: const Text('Continue with Google'),
                           ),
                         ),
@@ -267,7 +267,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   Text(
                     'By continuing, you agree to manage your data privately on your device + cloud.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 11, color: colors.mutedForeground),
+                    style: TextStyle(fontSize: 13, color: colors.mutedForeground),
                   ),
                 ],
               ),
@@ -332,7 +332,7 @@ class _Field extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.mutedForeground)),
+        Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: colors.mutedForeground)),
         const SizedBox(height: 6),
         TextField(
           controller: controller,
@@ -340,8 +340,8 @@ class _Field extends StatelessWidget {
           keyboardType: keyboardType,
           decoration: InputDecoration(hintText: hint, suffixIcon: suffix, errorText: null),
         ),
-        if (error != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 12))),
-        if (error == null && helper != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text(helper!, style: TextStyle(color: colors.mutedForeground, fontSize: 12))),
+        if (error != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 14))),
+        if (error == null && helper != null) Padding(padding: const EdgeInsets.only(top: 4), child: Text(helper!, style: TextStyle(color: colors.mutedForeground, fontSize: 14))),
       ],
     );
   }

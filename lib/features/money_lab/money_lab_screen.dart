@@ -80,7 +80,7 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
       child: ListView(
         children: [
           Text('Money Lab', style: Theme.of(context).textTheme.headlineMedium),
-          Text('Calculators, AI coach and expert guidance in one place.', style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
+          Text('Calculators, AI coach and expert guidance in one place.', style: TextStyle(fontSize: 15, color: colors.mutedForeground)),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(18),
@@ -92,23 +92,23 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(999)),
                   child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.auto_awesome, size: 12, color: Colors.white),
+                    Icon(Icons.auto_awesome, size: 14, color: Colors.white),
                     SizedBox(width: 4),
-                    Text('Featured', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
+                    Text('Featured', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white)),
                   ]),
                 ),
                 const SizedBox(height: 10),
-                const Text('What makes your money grow?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white)),
+                const Text('What makes your money grow?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Colors.white)),
                 const SizedBox(height: 4),
-                const Text('Pick a calculator below or chat with the AI Coach for personalised tips.', style: TextStyle(fontSize: 13, color: Colors.white70)),
+                const Text('Pick a calculator below or chat with the AI Coach for personalised tips.', style: TextStyle(fontSize: 15, color: Colors.white70)),
               ],
             ),
           ),
           const SizedBox(height: 16),
           Row(children: [
-            Icon(Icons.calculate_outlined, size: 18, color: scheme.primary),
+            Icon(Icons.calculate_outlined, size: 20, color: scheme.primary),
             const SizedBox(width: 6),
-            Text('Calculators · $_totalCalcCount', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+            Text('Calculators · $_totalCalcCount', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
           ]),
           const SizedBox(height: 8),
           PaisaCard(
@@ -116,14 +116,14 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('CHOOSE CALCULATOR', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
+                Text('CHOOSE CALCULATOR', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
                 const SizedBox(height: 6),
                 DropdownButtonFormField<String>(
                   initialValue: _activeCalc,
                   isExpanded: true,
                   items: [
                     for (final g in _calcGroups) ...[
-                      DropdownMenuItem(enabled: false, value: '__group_${g.title}', child: Text(g.title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12))),
+                      DropdownMenuItem(enabled: false, value: '__group_${g.title}', child: Text(g.title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14))),
                       for (final c in g.items) DropdownMenuItem(value: c.key, child: Padding(padding: const EdgeInsets.only(left: 8), child: Text(c.label))),
                     ],
                   ],
@@ -143,14 +143,14 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(children: [
-                  CircleAvatar(radius: 16, backgroundColor: colors.primaryTint, child: Icon(Icons.smart_toy_outlined, size: 16, color: scheme.primary)),
+                  CircleAvatar(radius: 16, backgroundColor: colors.primaryTint, child: Icon(Icons.smart_toy_outlined, size: 18, color: scheme.primary)),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('MoneyPilot Coach · AI', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
-                        Text('Save more, spend smarter. Educational tips only.', style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+                        const Text('MoneyPilot Coach · AI', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                        Text('Save more, spend smarter. Educational tips only.', style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
                       ],
                     ),
                   ),
@@ -167,12 +167,12 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(children: [
-                  Icon(Icons.school_outlined, size: 20, color: scheme.primary),
+                  Icon(Icons.school_outlined, size: 22, color: scheme.primary),
                   const SizedBox(width: 8),
-                  const Text('Ask an Expert', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                  const Text('Ask an Expert', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
                 ]),
                 const SizedBox(height: 4),
-                Text('Tap to reveal a verified expert recommendation from the MoneyPilot team.', style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
+                Text('Tap to reveal a verified expert recommendation from the MoneyPilot team.', style: TextStyle(fontSize: 15, color: colors.mutedForeground)),
                 const SizedBox(height: 14),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
@@ -194,9 +194,9 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('Show expert recommendation', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13)),
+                                          Text('Show expert recommendation', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15)),
                                           SizedBox(height: 2),
-                                          Text('Verified Chartered Accountant + CFA', style: TextStyle(color: Colors.white70, fontSize: 11)),
+                                          Text('Verified Chartered Accountant + CFA', style: TextStyle(color: Colors.white70, fontSize: 13)),
                                         ],
                                       ),
                                     ),
@@ -204,7 +204,7 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
                                       width: 36,
                                       height: 36,
                                       decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), shape: BoxShape.circle),
-                                      child: const Icon(Icons.auto_awesome, size: 16, color: Colors.white),
+                                      child: const Icon(Icons.auto_awesome, size: 18, color: Colors.white),
                                     ),
                                   ]),
                                 ),
@@ -225,8 +225,8 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('FIRM', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: scheme.primary, letterSpacing: 0.4)),
-                                    const Text('7Sapience Financial Advisory', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
+                                    Text('FIRM', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: scheme.primary, letterSpacing: 0.4)),
+                                    const Text('7Sapience Financial Advisory', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
                                   ],
                                 ),
                               ),
@@ -239,16 +239,16 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
                                     const SizedBox(height: 10),
                                     const _ExpertRow(name: 'Jitendra Nahar, CFA', credentials: 'Chartered Financial Analyst (CFA)'),
                                     const SizedBox(height: 10),
-                                    Text('SPECIALIZATION', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
-                                    const Text('Personal Finance · Investments · Tax Planning', style: TextStyle(fontSize: 13)),
+                                    Text('SPECIALIZATION', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
+                                    const Text('Personal Finance · Investments · Tax Planning', style: TextStyle(fontSize: 15)),
                                     const SizedBox(height: 10),
                                     Container(
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(color: const Color(0xFFFFFBEB), borderRadius: BorderRadius.circular(12), border: Border.all(color: const Color(0xFFFDE68A))),
                                       child: const Row(children: [
-                                        Icon(Icons.info_outline, size: 16, color: Color(0xFF92400E)),
+                                        Icon(Icons.info_outline, size: 18, color: Color(0xFF92400E)),
                                         SizedBox(width: 8),
-                                        Expanded(child: Text('Search "7Sapience" on LinkedIn or Google to connect.', style: TextStyle(fontSize: 12, color: Color(0xFF92400E)))),
+                                        Expanded(child: Text('Search "7Sapience" on LinkedIn or Google to connect.', style: TextStyle(fontSize: 14, color: Color(0xFF92400E)))),
                                       ]),
                                     ),
                                     const SizedBox(height: 10),
@@ -284,8 +284,8 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('How to reach out', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-              Text('Verified search guidance', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
+              const Text('How to reach out', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
+              Text('Verified search guidance', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(12),
@@ -317,11 +317,11 @@ class _ExpertRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(children: [
-              Flexible(child: Text(name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13), overflow: TextOverflow.ellipsis)),
+              Flexible(child: Text(name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15), overflow: TextOverflow.ellipsis)),
               const SizedBox(width: 4),
-              Icon(Icons.verified, size: 14, color: scheme.primary),
+              Icon(Icons.verified, size: 16, color: scheme.primary),
             ]),
-            Text(credentials, style: TextStyle(fontSize: 11, color: colors.mutedForeground)),
+            Text(credentials, style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
           ],
         ),
       ),
