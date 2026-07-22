@@ -33,7 +33,11 @@ class PaymentsRepository {
     );
   }
 
-  Future<void> verifyPayment({
+  /// Returns the server-confirmed plan + expiry once verified — the source
+  /// of truth is `profiles.plan` (updated server-side), not a local guess.
+  /// The razorpay-webhook function activates the same fields independently,
+  /// so Pro still unlocks even if this call never completes.
+  Future<VerifiedPayment> verifyPayment({
     required String orderId,
     required String paymentId,
     required String signature,
@@ -46,5 +50,16 @@ class PaymentsRepository {
     if (res.status != 200) {
       throw Exception((res.data is Map ? res.data['error'] : null) ?? 'Verification failed');
     }
+    final d = Map<String, dynamic>.from(res.data as Map);
+    return VerifiedPayment(
+      plan: d['plan'] as String? ?? 'pro',
+      planExpiresAt: DateTime.tryParse(d['plan_expires_at'] as String? ?? ''),
+    );
   }
+}
+
+class VerifiedPayment {
+  const VerifiedPayment({required this.plan, this.planExpiresAt});
+  final String plan;
+  final DateTime? planExpiresAt;
 }

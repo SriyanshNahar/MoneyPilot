@@ -217,10 +217,22 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           helper: _mode == _Mode.signup && _passwordError == null ? 'At least 8 characters, with a letter and a number.' : null,
                           suffix: IconButton(
                             icon: Icon(_showPw ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 22),
+                            tooltip: _showPw ? 'Hide password' : 'Show password',
                             onPressed: () => setState(() => _showPw = !_showPw),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        if (_mode == _Mode.signin) ...[
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: _busy ? null : () => context.push('/forgot-password'),
+                              style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(44, 36)),
+                              child: const Text('Forgot Password?'),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 8),
                         SizedBox(
                           height: 48,
                           child: FilledButton(

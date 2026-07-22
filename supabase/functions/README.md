@@ -25,11 +25,18 @@ supabase functions deploy send-alert
 ## Required secrets
 
 ```bash
-supabase secrets set GEMINI_API_KEY=...          # https://aistudio.google.com/apikey
+supabase secrets set ANTHROPIC_API_KEY=...       # https://console.anthropic.com/settings/keys
 supabase secrets set RAZORPAY_KEY_ID=...
 supabase secrets set RAZORPAY_KEY_SECRET=...
+supabase secrets set RAZORPAY_WEBHOOK_SECRET=... # Dashboard → Settings → Webhooks → your webhook's secret
 supabase secrets set RESEND_API_KEY=...          # optional — email alerts only
 ```
+
+`ai-chat` calls Anthropic's Claude API (`claude-sonnet-5`) with streaming
+enabled, and automatically includes a summary of the caller's own last-30-day
+spending (fetched RLS-scoped, using their own JWT — never bypasses row
+security) so answers about "my expenses" or "my budget" are grounded in real
+numbers, not generic advice.
 
 `SUPABASE_URL` / `SUPABASE_ANON_KEY` are injected automatically by the
 Supabase platform at runtime — no need to set them manually.

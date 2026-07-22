@@ -20,7 +20,7 @@ fi
 echo "Linking to project $PROJECT_REF (will prompt for login if needed)..."
 supabase link --project-ref "$PROJECT_REF"
 
-for fn in ai-chat razorpay-create-order razorpay-verify-payment send-alert; do
+for fn in ai-chat razorpay-create-order razorpay-verify-payment razorpay-webhook send-alert; do
   echo
   echo "=== Deploying $fn ==="
   supabase functions deploy "$fn" --no-verify-jwt
@@ -28,7 +28,7 @@ done
 
 echo
 echo "All 4 functions deployed. Verifying..."
-for fn in ai-chat razorpay-create-order razorpay-verify-payment send-alert; do
+for fn in ai-chat razorpay-create-order razorpay-verify-payment razorpay-webhook send-alert; do
   status=$(curl -s -o /dev/null -w "%{http_code}" -X OPTIONS \
     "https://$PROJECT_REF.supabase.co/functions/v1/$fn")
   if [ "$status" = "200" ] || [ "$status" = "204" ]; then

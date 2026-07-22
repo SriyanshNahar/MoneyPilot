@@ -17,7 +17,7 @@ if (-not (Get-Command supabase -ErrorAction SilentlyContinue)) {
 Write-Host "Linking to project $ProjectRef (will prompt for login if needed)..."
 supabase link --project-ref $ProjectRef
 
-$functions = @("ai-chat", "razorpay-create-order", "razorpay-verify-payment", "send-alert")
+$functions = @("ai-chat", "razorpay-create-order", "razorpay-verify-payment", "razorpay-webhook", "send-alert")
 foreach ($fn in $functions) {
     Write-Host ""
     Write-Host "=== Deploying $fn ==="

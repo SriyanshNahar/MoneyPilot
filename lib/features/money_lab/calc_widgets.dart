@@ -33,7 +33,7 @@ class CalcShell extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+                  Text(title, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
                   Text(subtitle, style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
                 ],
               ),

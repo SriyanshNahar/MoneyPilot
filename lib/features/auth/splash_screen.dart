@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/quotes/finance_quotes.dart';
-import '../../core/quotes/quote_picker.dart';
+import '../../core/widgets/loading_quote.dart';
 import 'auth_controller.dart';
 
-/// Direct port of src/components/SplashScreen.tsx + routes/index.tsx's
-/// IndexRedirect: show the splash for at least 1400ms, then route to
-/// /dashboard or /auth once the session has resolved.
+/// App launch screen: Logo → app name/tagline/attribution → loading
+/// indicator → rotating finance quote → Home. Minimal white background, no
+/// glow behind the logo (removed per v2.1 — was reading as a colored badge
+/// rather than a clean mark). Shows immediately at process start so there is
+/// never a blank white frame while the session/auth check resolves.
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
@@ -18,32 +19,17 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   bool _minTimeElapsed = false;
-  FinanceQuote? _quote;
-  late final AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat();
-    Timer(const Duration(milliseconds: 1400), () {
+    Timer(const Duration(milliseconds: 1200), () {
       if (!mounted) return;
       setState(() => _minTimeElapsed = true);
       _maybeNavigate();
     });
-    // Bundled locally (lib/core/quotes/finance_quotes.dart) — always
-    // available even with zero connectivity, so there's nothing to
-    // actually "fall back" from; local is the only source, on purpose.
-    pickSplashQuote().then((q) {
-      if (mounted) setState(() => _quote = q);
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   void _maybeNavigate() {
@@ -60,49 +46,30 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     ref.listen(authControllerProvider, (prev, next) => _maybeNavigate());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F2),
-      body: Center(
+      backgroundColor: Colors.white,
+      body: SafeArea(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
+            const Spacer(flex: 3),
             TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0.85, end: 1.0),
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.elasticOut,
+              tween: Tween(begin: 0.9, end: 1.0),
+              duration: const Duration(milliseconds: 450),
+              curve: Curves.easeOutBack,
               builder: (context, scale, child) => Transform.scale(scale: scale, child: child),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, _) {
-                      final t = (_controller.value * 2 - 1).abs();
-                      return Container(
-                        width: 160 + 20 * (1 - t),
-                        height: 160 + 20 * (1 - t),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF34D399).withValues(alpha: 0.45 + 0.25 * (1 - t)),
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                      );
-                    },
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(38),
-                    child: Image.asset(
-                      'assets/images/app_icon.png',
-                      width: 140,
-                      height: 140,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: Image.asset(
+                  'assets/images/app_icon.png',
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 28),
             const Text(
               'MoneyPilot',
-              style: TextStyle(fontSize: 34, fontWeight: FontWeight.w800, color: Color(0xFF0F172A), letterSpacing: -0.5),
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w800, color: Color(0xFF0F172A), letterSpacing: -0.5),
             ),
             const SizedBox(height: 8),
             const Text(
@@ -124,60 +91,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 28),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 400),
-              child: _quote == null
-                  ? const SizedBox(height: 54)
-                  : Padding(
-                      key: ValueKey(_quote!.text),
-                      padding: const EdgeInsets.symmetric(horizontal: 36),
-                      child: Column(
-                        children: [
-                          Text(
-                            '“${_quote!.text}”',
-                            textAlign: TextAlign.center,
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontStyle: FontStyle.italic,
-                              color: Color(0xFF334155),
-                              height: 1.4,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            '— ${_quote!.author}',
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF059669)),
-                          ),
-                        ],
-                      ),
-                    ),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: 96,
-              height: 4,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(999),
-                child: Container(
-                  color: const Color(0xFFD1FAE5),
-                  child: AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, _) {
-                      return Align(
-                        alignment: Alignment(-1 + _controller.value * 4, 0),
-                        child: FractionallySizedBox(
-                          widthFactor: 1 / 3,
-                          child: Container(height: 4, color: const Color(0xFF059669)),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            const Spacer(flex: 2),
+            const FullLoadingQuote(),
+            const SizedBox(height: 32),
           ],
         ),
       ),

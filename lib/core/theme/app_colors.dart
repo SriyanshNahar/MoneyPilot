@@ -13,6 +13,9 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.mutedForeground,
     required this.gradientStart,
     required this.gradientEnd,
+    required this.success,
+    required this.successTint,
+    required this.successForeground,
   });
 
   final Color primaryTint;
@@ -24,6 +27,11 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color mutedForeground;
   final Color gradientStart;
   final Color gradientEnd;
+  final Color success;
+  final Color successTint;
+  /// Darker than [success] — use for text/icons drawn on [successTint], since
+  /// #22C55E itself falls below WCAG AA contrast (~2.1:1) on its own tint.
+  final Color successForeground;
 
   static const light = AppColors(
     primaryTint: Color(0xFFE6F4F1),
@@ -35,6 +43,9 @@ class AppColors extends ThemeExtension<AppColors> {
     mutedForeground: Color(0xFF6B7280),
     gradientStart: Color(0xFF0F766E),
     gradientEnd: Color(0xFF14B8A6),
+    success: Color(0xFF22C55E),
+    successTint: Color(0xFFDCFCE7),
+    successForeground: Color(0xFF166534),
   );
 
   static const dark = AppColors(
@@ -47,6 +58,9 @@ class AppColors extends ThemeExtension<AppColors> {
     mutedForeground: Color(0xFF94A3B8),
     gradientStart: Color(0xFF14B8A6),
     gradientEnd: Color(0xFF2DD4BF),
+    success: Color(0xFF22C55E),
+    successTint: Color(0xFF0F2E1B),
+    successForeground: Color(0xFF22C55E), // already ~6.5:1 on the dark tint
   );
 
   @override
@@ -60,6 +74,9 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? mutedForeground,
     Color? gradientStart,
     Color? gradientEnd,
+    Color? success,
+    Color? successTint,
+    Color? successForeground,
   }) {
     return AppColors(
       primaryTint: primaryTint ?? this.primaryTint,
@@ -71,6 +88,9 @@ class AppColors extends ThemeExtension<AppColors> {
       mutedForeground: mutedForeground ?? this.mutedForeground,
       gradientStart: gradientStart ?? this.gradientStart,
       gradientEnd: gradientEnd ?? this.gradientEnd,
+      success: success ?? this.success,
+      successTint: successTint ?? this.successTint,
+      successForeground: successForeground ?? this.successForeground,
     );
   }
 
@@ -87,6 +107,9 @@ class AppColors extends ThemeExtension<AppColors> {
       mutedForeground: Color.lerp(mutedForeground, other.mutedForeground, t)!,
       gradientStart: Color.lerp(gradientStart, other.gradientStart, t)!,
       gradientEnd: Color.lerp(gradientEnd, other.gradientEnd, t)!,
+      success: Color.lerp(success, other.success, t)!,
+      successTint: Color.lerp(successTint, other.successTint, t)!,
+      successForeground: Color.lerp(successForeground, other.successForeground, t)!,
     );
   }
 }

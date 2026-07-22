@@ -79,6 +79,7 @@ class _PlansSheetState extends ConsumerState<PlansSheet> {
         'name': 'MoneyPilot',
         'description': 'Pro plan · 1 year',
         'prefill': {
+          'name': (user?.userMetadata?['full_name'] as String?) ?? '',
           'contact': '+91${_phone.text}',
           'email': user?.email ?? '',
         },
@@ -92,15 +93,19 @@ class _PlansSheetState extends ConsumerState<PlansSheet> {
 
   Future<void> _onPaymentSuccess(PaymentSuccessResponse r) async {
     try {
-      await const PaymentsRepository().verifyPayment(
+      // Server-side verification activates Pro on profiles.plan (and the
+      // razorpay-webhook function does the same independently, in case this
+      // call never completes) — the plan we cache locally is whatever the
+      // server confirms, not an assumption made here.
+      final verified = await const PaymentsRepository().verifyPayment(
         orderId: r.orderId ?? _pendingOrderId ?? '',
         paymentId: r.paymentId ?? '',
         signature: r.signature ?? '',
       );
-      await LocalPrefs.setPlan('pro');
+      await LocalPrefs.setPlan(verified.plan);
       await LocalPrefs.setPhone(_phone.text);
-      _toast('Payment successful');
-      widget.onPicked('pro');
+      _toast('Payment successful — Pro unlocked instantly.');
+      widget.onPicked(verified.plan);
     } catch (e) {
       _toast(e.toString().replaceFirst('Exception: ', ''));
     } finally {
@@ -183,10 +188,13 @@ class _PlansSheetState extends ConsumerState<PlansSheet> {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Secured by Razorpay · Test mode. Card 4111 1111 1111 1111 · CVV 123 · Exp 12/26.',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, color: colors.mutedForeground),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.lock_outline, size: 13, color: colors.mutedForeground),
+              const SizedBox(width: 4),
+              Text('Secured by Razorpay · PCI-DSS compliant', style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
+            ],
           ),
         ],
       ),

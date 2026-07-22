@@ -175,7 +175,7 @@ class _ExpenseFormScreenState extends ConsumerState<ExpenseFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add expense'),
-        leading: IconButton(icon: const Icon(Icons.chevron_left), onPressed: _goBack),
+        leading: IconButton(icon: const Icon(Icons.chevron_left), tooltip: 'Back', onPressed: _goBack),
         actions: [TextButton(onPressed: _goBack, child: const Text('Cancel'))],
       ),
       body: Stack(

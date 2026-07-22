@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
-import '../../core/widgets/loading_quote.dart';
 import '../../data/repositories/ai_repository.dart';
+import '../auth/auth_controller.dart';
 
 const _suggestedPrompts = [
   'How much should my emergency fund be?',
@@ -11,23 +12,61 @@ const _suggestedPrompts = [
   'Explain the 50/30/20 budgeting rule',
 ];
 
-/// Direct port of the PaisaMitraChat component in src/routes/_app.insights.tsx.
-class AiCoachChat extends StatefulWidget {
+const _greeting = ChatMessage(
+  'assistant',
+  "Hi! I'm Paisa Mitra, your AI money coach — now powered by Claude. Ask me to analyze your spending, plan a budget, size an EMI prepayment, or set a savings goal.",
+);
+
+/// Direct port of the PaisaMitraChat component in src/routes/_app.insights.tsx,
+/// upgraded for v2.1: Claude (streaming) instead of Gemini, persisted chat
+/// history, and a typing-cursor animation while the reply streams in.
+class AiCoachChat extends ConsumerStatefulWidget {
   const AiCoachChat({super.key});
   @override
-  State<AiCoachChat> createState() => _AiCoachChatState();
+  ConsumerState<AiCoachChat> createState() => _AiCoachChatState();
 }
 
-class _AiCoachChatState extends State<AiCoachChat> {
+class _AiCoachChatState extends ConsumerState<AiCoachChat> {
   final _repo = const AiRepository();
-  final _messages = <ChatMessage>[
-    const ChatMessage('assistant',
-        "Hi! I'm Paisa Mitra, your AI money coach. Ask me how to save more, cut wasted spending, start a SIP, plan EMIs or save tax — I'll give you simple, actionable steps."),
-  ];
+  final _messages = <ChatMessage>[];
   final _input = TextEditingController();
   final _scroll = ScrollController();
+  bool _loadingHistory = true;
   bool _busy = false;
+  String _streamingText = '';
   String? _error;
+
+  String? get _uid => ref.read(authControllerProvider).user?.id;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHistory();
+  }
+
+  Future<void> _loadHistory() async {
+    final uid = _uid;
+    if (uid == null) {
+      setState(() {
+        _messages.add(_greeting);
+        _loadingHistory = false;
+      });
+      return;
+    }
+    try {
+      final history = await _repo.loadHistory(uid);
+      setState(() {
+        _messages.addAll(history.isEmpty ? [_greeting] : history);
+        _loadingHistory = false;
+      });
+    } catch (_) {
+      setState(() {
+        _messages.add(_greeting);
+        _loadingHistory = false;
+      });
+    }
+    _scrollToBottom();
+  }
 
   @override
   void dispose() {
@@ -47,16 +86,31 @@ class _AiCoachChatState extends State<AiCoachChat> {
   Future<void> _send(String text) async {
     final content = text.trim();
     if (content.isEmpty || _busy) return;
+    final uid = _uid;
+    final userMessage = ChatMessage('user', content);
     setState(() {
       _error = null;
-      _messages.add(ChatMessage('user', content));
+      _messages.add(userMessage);
       _input.clear();
       _busy = true;
+      _streamingText = '';
     });
     _scrollToBottom();
+    if (uid != null) unawaited(_repo.saveMessage(uid, userMessage));
+
     try {
-      final reply = await _repo.chatWithPaisaMitra(_messages);
-      setState(() => _messages.add(ChatMessage('assistant', reply)));
+      final buffer = StringBuffer();
+      await for (final delta in _repo.streamChat(_messages)) {
+        buffer.write(delta);
+        setState(() => _streamingText = buffer.toString());
+        _scrollToBottom();
+      }
+      final reply = ChatMessage('assistant', buffer.toString());
+      setState(() {
+        _messages.add(reply);
+        _streamingText = '';
+      });
+      if (uid != null) unawaited(_repo.saveMessage(uid, reply));
     } catch (e) {
       setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
     } finally {
@@ -68,26 +122,31 @@ class _AiCoachChatState extends State<AiCoachChat> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final itemCount = _messages.length + (_busy ? 1 : 0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          constraints: const BoxConstraints(maxHeight: 280),
+          constraints: const BoxConstraints(maxHeight: 320),
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(14)),
-          child: ListView.separated(
-            controller: _scroll,
-            shrinkWrap: true,
-            itemCount: _messages.length + (_busy ? 1 : 0),
-            separatorBuilder: (_, _) => const SizedBox(height: 8),
-            itemBuilder: (context, i) {
-              if (i >= _messages.length) return const LoadingQuote(label: 'Paisa Mitra is thinking');
-              final m = _messages[i];
-              return _ChatBubble(role: m.role, content: m.content);
-            },
-          ),
+          child: _loadingHistory
+              ? const Padding(padding: EdgeInsets.symmetric(vertical: 24), child: Center(child: CircularProgressIndicator(strokeWidth: 2)))
+              : ListView.separated(
+                  controller: _scroll,
+                  shrinkWrap: true,
+                  itemCount: itemCount,
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
+                  itemBuilder: (context, i) {
+                    if (i >= _messages.length) {
+                      return _ChatBubble(role: 'assistant', content: _streamingText, streaming: true);
+                    }
+                    final m = _messages[i];
+                    return _ChatBubble(role: m.role, content: m.content);
+                  },
+                ),
         ),
-        if (_messages.length <= 1) ...[
+        if (_messages.length <= 1 && !_loadingHistory) ...[
           const SizedBox(height: 10),
           Wrap(
             spacing: 8,
@@ -143,10 +202,13 @@ class _AiCoachChatState extends State<AiCoachChat> {
   }
 }
 
+void unawaited(Future<void> future) {}
+
 class _ChatBubble extends StatelessWidget {
-  const _ChatBubble({required this.role, required this.content});
+  const _ChatBubble({required this.role, required this.content, this.streaming = false});
   final String role;
   final String content;
+  final bool streaming;
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +233,18 @@ class _ChatBubble extends StatelessWidget {
                 bottomRight: Radius.circular(isUser ? 4 : 16),
               ),
             ),
-            child: Text(content, style: TextStyle(fontSize: 15, height: 1.4, color: isUser ? scheme.onPrimary : null)),
+            child: content.isEmpty && streaming
+                ? const _TypingDots()
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        child: Text(content, style: TextStyle(fontSize: 15, height: 1.4, color: isUser ? scheme.onPrimary : null)),
+                      ),
+                      if (streaming) const _TypingCursor(),
+                    ],
+                  ),
           ),
         ),
         if (isUser) const SizedBox(width: 6),
@@ -185,6 +258,79 @@ class _ChatBubble extends StatelessWidget {
       radius: 12,
       backgroundColor: isUser ? scheme.primary : colors.primaryTint,
       child: Icon(isUser ? Icons.person : Icons.smart_toy_outlined, size: 15, color: isUser ? scheme.onPrimary : scheme.primary),
+    );
+  }
+}
+
+/// Blinking cursor shown at the end of the streaming bubble — the "typing
+/// animation" while Claude's reply is still arriving.
+class _TypingCursor extends StatefulWidget {
+  const _TypingCursor();
+  @override
+  State<_TypingCursor> createState() => _TypingCursorState();
+}
+
+class _TypingCursorState extends State<_TypingCursor> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 600))..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: Container(
+        margin: const EdgeInsets.only(left: 2, bottom: 2),
+        width: 7,
+        height: 15,
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(1)),
+      ),
+    );
+  }
+}
+
+/// Three-dot "thinking" indicator shown before the first token arrives.
+class _TypingDots extends StatefulWidget {
+  const _TypingDots();
+  @override
+  State<_TypingDots> createState() => _TypingDotsState();
+}
+
+class _TypingDotsState extends State<_TypingDots> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return SizedBox(
+      width: 34,
+      height: 14,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(3, (i) {
+              final t = (_controller.value - i * 0.2) % 1.0;
+              final scale = 0.5 + 0.5 * (t < 0.5 ? t * 2 : (1 - t) * 2).clamp(0.0, 1.0);
+              return Opacity(
+                opacity: 0.4 + 0.6 * scale,
+                child: Container(width: 6, height: 6, decoration: BoxDecoration(color: primary, shape: BoxShape.circle)),
+              );
+            }),
+          );
+        },
+      ),
     );
   }
 }

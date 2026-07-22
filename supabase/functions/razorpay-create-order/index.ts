@@ -1,15 +1,19 @@
 // Creates a Razorpay order server-side — the key secret must never reach
 // the mobile client. Ports src/lib/razorpay.functions.ts's
-// createRazorpayOrder. Configure with:
+// createRazorpayOrder. v2.1: also records a 'created' row in
+// plan_subscriptions and stamps the order's notes with user_id, so both the
+// client's verify call AND the (independent) razorpay-webhook can attribute
+// the payment to the right account.
+// Configure with:
 //   supabase secrets set RAZORPAY_KEY_ID=... RAZORPAY_KEY_SECRET=...
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
-import { requireUser } from "../_shared/auth.ts";
+import { requireUserWithClient } from "../_shared/auth.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    await requireUser(req);
+    const { user, supabase } = await requireUserWithClient(req);
 
     const { amount, currency = "INR", plan } = await req.json();
     if (typeof amount !== "number" || !Number.isInteger(amount) || amount < 100) {
@@ -34,7 +38,7 @@ Deno.serve(async (req) => {
         amount,
         currency,
         receipt: `rcpt_${Date.now()}`,
-        notes: { plan },
+        notes: { plan, user_id: user.id },
       }),
     });
 
@@ -44,6 +48,21 @@ Deno.serve(async (req) => {
     }
 
     const order = await res.json();
+
+    const { error: insertError } = await supabase.from("plan_subscriptions").insert({
+      user_id: user.id,
+      plan,
+      amount_paise: amount,
+      razorpay_order_id: order.id,
+      status: "created",
+    });
+    if (insertError) {
+      // Non-fatal — the webhook/verify step can still complete the payment;
+      // this row is bookkeeping, not the source of truth for whether Razorpay
+      // charged the customer.
+      console.error("plan_subscriptions insert failed", insertError);
+    }
+
     return jsonResponse({
       order_id: order.id,
       amount: order.amount,

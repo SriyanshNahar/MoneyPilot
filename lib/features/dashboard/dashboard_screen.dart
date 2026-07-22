@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../../core/notifications/reminder_scheduler.dart';
 import '../../core/offline/offline_cache.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format.dart';
+import '../../core/widgets/loading_quote.dart';
 import '../../core/widgets/paisa_card.dart';
 import '../../data/models/expense.dart';
 import '../../data/models/money.dart';
@@ -194,7 +196,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       child: RefreshIndicator(
         onRefresh: () async => ref.invalidate(_dashboardProvider),
         child: async.when(
-          loading: () => const Center(child: Padding(padding: EdgeInsets.only(top: 80), child: CircularProgressIndicator())),
+          loading: () => const Padding(padding: EdgeInsets.only(top: 60), child: FullLoadingQuote()),
           error: (e, st) => ListView(children: [Padding(padding: const EdgeInsets.all(24), child: Text('Failed to load: $e'))]),
           data: (d) => _buildContent(context, d, today),
         ),
@@ -246,6 +248,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         Text('$firstName 👋', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 16),
 
+        const _MoneyToolsRow(),
+        const SizedBox(height: 24),
+
         _SectionHeader(icon: Icons.watch_later_outlined, tint: context.colors.destructiveTint, tintFg: Theme.of(context).colorScheme.error, title: "Today's reminders", subtitle: 'Everything due today'),
         _ReminderList(
           rows: [
@@ -274,36 +279,73 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         const SizedBox(height: 24),
 
         _SectionHeader(icon: Icons.cake_outlined, tint: colors.accentTint, tintFg: const Color(0xFFF59E0B), title: 'Personal events', subtitle: 'Birthdays, anniversaries & more', trailing: _AddEventLink()),
-        PaisaCardDivided(
-          children: buckets.entries.where((e) => e.value.isNotEmpty).isEmpty
-              ? [_EmptyRow(text: 'No personal events yet.', addType: 'event')]
-              : [
-                  for (final entry in buckets.entries)
-                    if (entry.value.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(entry.key.toUpperCase(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
-                            const SizedBox(height: 6),
-                            for (final e in entry.value)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(child: Text(e.personName, style: const TextStyle(fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis)),
-                                    Text(e.eventDate != null ? formatDateIN(e.eventDate) : 'Date not set', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                ],
-        ),
+        if (buckets.entries.where((e) => e.value.isNotEmpty).isEmpty)
+          const _PersonalEventsEmptyState()
+        else
+          PaisaCardDivided(
+            children: [
+              for (final entry in buckets.entries)
+                if (entry.value.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(entry.key.toUpperCase(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colors.mutedForeground, letterSpacing: 0.4)),
+                        const SizedBox(height: 6),
+                        for (final e in entry.value)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(child: Text(e.personName, style: const TextStyle(fontWeight: FontWeight.w500), overflow: TextOverflow.ellipsis)),
+                                Text(e.eventDate != null ? formatDateIN(e.eventDate) : 'Date not set', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+            ],
+          ),
         const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+/// Quick-access row to the four new v2.1 money-tracking modules.
+class _MoneyToolsRow extends StatelessWidget {
+  const _MoneyToolsRow();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final items = [
+      (label: 'Goals', icon: Symbols.flag_rounded, tint: colors.primaryTint, fg: Theme.of(context).colorScheme.primary, path: '/goals'),
+      (label: 'Investments', icon: Symbols.trending_up_rounded, tint: colors.secondaryTint, fg: const Color(0xFF0F766E), path: '/investments'),
+      (label: 'Loans', icon: Symbols.account_balance_rounded, tint: colors.destructiveTint, fg: Theme.of(context).colorScheme.error, path: '/loans'),
+      (label: 'Subscriptions', icon: Symbols.subscriptions_rounded, tint: colors.accentTint, fg: const Color(0xFFF59E0B), path: '/subscriptions'),
+    ];
+    return Row(
+      children: [
+        for (final item in items) ...[
+          Expanded(
+            child: PaisaCard(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              onTap: () => context.push(item.path),
+              child: Column(
+                children: [
+                  Container(width: 40, height: 40, decoration: BoxDecoration(color: item.tint, borderRadius: BorderRadius.circular(12)), child: Icon(item.icon, size: 20, color: item.fg)),
+                  const SizedBox(height: 6),
+                  Text(item.label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+          ),
+          if (item != items.last) const SizedBox(width: 8),
+        ],
       ],
     );
   }
@@ -331,7 +373,7 @@ class _SectionHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 Text(subtitle, style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
               ],
             ),
@@ -481,6 +523,67 @@ class _ReminderList extends StatelessWidget {
           ),
         );
       }).toList(),
+    );
+  }
+}
+
+/// Redesigned Personal Events empty state: single card (was previously
+/// double-nested inside PaisaCardDivided, which doubled the border/shadow
+/// and produced the oversized whitespace), everything centered, natural
+/// height, subtle tinted-blob illustration behind the icon, and "Add Event"
+/// promoted to a primary filled CTA instead of a text link.
+class _PersonalEventsEmptyState extends StatelessWidget {
+  const _PersonalEventsEmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return PaisaCard(
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 72,
+            height: 72,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(colors: [colors.accentTint, colors.accentTint.withValues(alpha: 0)]),
+                  ),
+                ),
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(color: colors.accentTint, shape: BoxShape.circle),
+                  child: const Icon(Symbols.calendar_month_rounded, size: 26, color: Color(0xFFF59E0B)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text('No personal events yet', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600), textAlign: TextAlign.center),
+          const SizedBox(height: 6),
+          Text(
+            'Keep track of birthdays, anniversaries\nand important dates.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: colors.mutedForeground, height: 1.4),
+          ),
+          const SizedBox(height: 18),
+          FilledButton.icon(
+            onPressed: () => context.push('/expenses/new?type=event'),
+            icon: const Icon(Icons.add, size: 18),
+            label: const Text('Add Event'),
+            style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 20)),
+          ),
+        ],
+      ),
     );
   }
 }

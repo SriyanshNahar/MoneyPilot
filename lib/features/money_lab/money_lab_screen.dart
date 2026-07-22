@@ -108,30 +108,47 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
           Row(children: [
             Icon(Icons.calculate_outlined, size: 20, color: scheme.primary),
             const SizedBox(width: 6),
-            Text('Calculators · $_totalCalcCount', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            Text('Calculators · $_totalCalcCount', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ]),
           const SizedBox(height: 8),
           PaisaCard(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('CHOOSE CALCULATOR', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
-                const SizedBox(height: 6),
-                DropdownButtonFormField<String>(
-                  initialValue: _activeCalc,
-                  isExpanded: true,
-                  items: [
-                    for (final g in _calcGroups) ...[
-                      DropdownMenuItem(enabled: false, value: '__group_${g.title}', child: Text(g.title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14))),
-                      for (final c in g.items) DropdownMenuItem(value: c.key, child: Padding(padding: const EdgeInsets.only(left: 8), child: Text(c.label))),
-                    ],
-                  ],
-                  onChanged: (v) {
-                    if (v != null && !v.startsWith('__group_')) setState(() => _activeCalc = v);
-                  },
-                ),
-              ],
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Theme(
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final g in _calcGroups)
+                    ExpansionTile(
+                      initiallyExpanded: g.items.any((c) => c.key == _activeCalc),
+                      tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+                      childrenPadding: EdgeInsets.zero,
+                      title: Text(
+                        g.title,
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black),
+                      ),
+                      children: [
+                        for (final c in g.items)
+                          ListTile(
+                            selected: c.key == _activeCalc,
+                            selectedTileColor: colors.primaryTint.withValues(alpha: 0.5),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                            visualDensity: const VisualDensity(vertical: 1),
+                            title: Text(
+                              c.label,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: c.key == _activeCalc ? scheme.primary : null,
+                              ),
+                            ),
+                            trailing: c.key == _activeCalc ? Icon(Icons.check_circle, size: 20, color: scheme.primary) : null,
+                            onTap: () => setState(() => _activeCalc = c.key),
+                          ),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -149,7 +166,7 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('MoneyPilot Coach · AI', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                        const Text('MoneyPilot Coach · AI', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500)),
                         Text('Save more, spend smarter. Educational tips only.', style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
                       ],
                     ),
@@ -169,7 +186,7 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
                 Row(children: [
                   Icon(Icons.school_outlined, size: 22, color: scheme.primary),
                   const SizedBox(width: 8),
-                  const Text('Ask an Expert', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                  const Text('Ask an Expert', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
                 ]),
                 const SizedBox(height: 4),
                 Text('Tap to reveal a verified expert recommendation from the MoneyPilot team.', style: TextStyle(fontSize: 15, color: colors.mutedForeground)),

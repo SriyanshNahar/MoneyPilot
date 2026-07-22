@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/offline_banner.dart';
@@ -12,11 +13,13 @@ class _Tab {
   final IconData activeIcon;
 }
 
+// Best-effort Material Symbols Rounded swap (v2.1): applied here first since
+// the bottom nav is the single most-seen icon surface in the app.
 const _tabs = [
-  _Tab('/dashboard', 'Home', Icons.home_outlined, Icons.home),
-  _Tab('/khata', 'Activity', Icons.access_time_outlined, Icons.access_time_filled),
-  _Tab('/insights', 'Money Lab', Icons.science_outlined, Icons.science),
-  _Tab('/settings', 'Profile', Icons.person_outline, Icons.person),
+  _Tab('/dashboard', 'Home', Symbols.home_rounded, Symbols.home_rounded),
+  _Tab('/khata', 'Activity', Symbols.schedule_rounded, Symbols.schedule_rounded),
+  _Tab('/insights', 'Money Lab', Symbols.science_rounded, Symbols.science_rounded),
+  _Tab('/settings', 'Profile', Symbols.person_rounded, Symbols.person_rounded),
 ];
 
 /// Direct port of src/components/AppShell.tsx: scrollable content area plus

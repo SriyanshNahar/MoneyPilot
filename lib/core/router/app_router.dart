@@ -5,14 +5,19 @@ import 'package:go_router/go_router.dart';
 import '../../features/app_lock/app_lock_gate.dart';
 import '../../features/auth/auth_controller.dart';
 import '../../features/auth/auth_screen.dart';
+import '../../features/auth/forgot_password_flow.dart';
 import '../../features/auth/splash_screen.dart';
 import '../../features/activity/activity_screen.dart';
 import '../../features/dashboard/dashboard_screen.dart';
 import '../../features/expenses/expense_form_screen.dart';
+import '../../features/goals/goals_screen.dart';
+import '../../features/investments/investments_screen.dart';
+import '../../features/loans/loans_screen.dart';
 import '../../features/money_lab/money_lab_screen.dart';
 import '../../features/settings/settings_screen.dart';
+import '../../features/subscriptions/subscriptions_screen.dart';
 
-const _protectedPaths = {'/dashboard', '/khata', '/insights', '/settings', '/expenses/new'};
+const _protectedPaths = {'/dashboard', '/khata', '/insights', '/settings', '/expenses/new', '/goals', '/investments', '/loans', '/subscriptions'};
 
 /// Direct port of the TanStack Router setup (router.tsx + routes/*): a
 /// public splash + auth flow, and an authenticated area gated behind
@@ -40,6 +45,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
       GoRoute(path: '/auth', builder: (context, state) => const AuthScreen()),
+      GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordFlow()),
       GoRoute(
         path: '/dashboard',
         builder: (context, state) => const _Protected(child: DashboardScreen()),
@@ -62,6 +68,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           child: ExpenseFormScreen(forceType: state.uri.queryParameters['type']),
         ),
       ),
+      GoRoute(path: '/goals', builder: (context, state) => const _Protected(child: GoalsScreen())),
+      GoRoute(path: '/investments', builder: (context, state) => const _Protected(child: InvestmentsScreen())),
+      GoRoute(path: '/loans', builder: (context, state) => const _Protected(child: LoansScreen())),
+      GoRoute(path: '/subscriptions', builder: (context, state) => const _Protected(child: SubscriptionsScreen())),
     ],
   );
 });

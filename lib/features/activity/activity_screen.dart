@@ -9,6 +9,7 @@ import '../../core/offline/offline_cache.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/icon_map.dart';
+import '../../core/widgets/loading_quote.dart';
 import '../../core/widgets/paisa_card.dart';
 import '../../data/repositories/expenses_repository.dart';
 import '../auth/auth_controller.dart';
@@ -179,7 +180,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
 
     return AppShell(
       child: async.when(
-        loading: () => const Center(child: Padding(padding: EdgeInsets.only(top: 80), child: CircularProgressIndicator())),
+        loading: () => const Padding(padding: EdgeInsets.only(top: 60), child: FullLoadingQuote()),
         error: (e, st) => Center(child: Text('Failed to load: $e')),
         data: (rows) {
           final filtered = rows.where((r) {
@@ -362,7 +363,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
               IconButton(
                 onPressed: _deletingId == r.id ? null : () => _confirmAndDelete(r.id),
                 icon: const Icon(Icons.delete_outline, size: 22),
-                visualDensity: VisualDensity.compact,
+                tooltip: 'Delete entry',
                 color: colors.mutedForeground,
               ),
             ],

@@ -7,11 +7,14 @@ const _displayFontFamilyFallback = ['Manrope', 'Inter'];
 class AppTheme {
   AppTheme._();
 
-  static const double radius = 18; // matches --radius: 1.125rem
+  static const double radius = 16; // v2.1: cards use a 12-16dp radius, was 18+4=22
 
   static ThemeData get light => _build(
         brightness: Brightness.light,
-        background: const Color(0xFFFFFFFF),
+        // v2.1 color system: background is a soft off-white (#F8FAFC) so
+        // white cards/surfaces actually lift off the page instead of
+        // blending flat into it — was #FFFFFF for both before.
+        background: const Color(0xFFF8FAFC),
         foreground: const Color(0xFF111827),
         primary: const Color(0xFF0F766E),
         onPrimary: const Color(0xFFFFFFFF),
@@ -19,9 +22,9 @@ class AppTheme {
         onSecondary: const Color(0xFFFFFFFF),
         accent: const Color(0xFFF59E0B),
         onAccent: const Color(0xFF111827),
-        destructive: const Color(0xFFDC2626),
+        destructive: const Color(0xFFEF4444),
         onDestructive: const Color(0xFFFFFFFF),
-        muted: const Color(0xFFF8FAFC),
+        muted: const Color(0xFFF1F5F9),
         colors: AppColors.light,
       );
 
@@ -138,7 +141,7 @@ class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius + 4),
+          borderRadius: BorderRadius.circular(radius),
           side: BorderSide(color: colors.border),
         ),
       ),
