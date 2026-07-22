@@ -268,17 +268,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             _WindowPicker(value: _windowDays, onChanged: (v) => setState(() => _windowDays = v)),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
-          child: Text('Filter applies to expenses & personal events below.', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
-        ),
+        const _FilterHelperRow(),
         _ReminderList(rows: upcoming, emptyText: 'No expenses due in the next $_windowDays days.', addType: 'expense'),
-        const SizedBox(height: 10),
-        FilledButton.icon(
-          onPressed: () => context.push('/expenses/new?type=expense'),
-          icon: const Icon(Icons.add, size: 20),
-          label: const Text('Add Expense'),
-        ),
         const SizedBox(height: 24),
 
         _SectionHeader(icon: Icons.cake_outlined, tint: colors.accentTint, tintFg: const Color(0xFFF59E0B), title: 'Personal events', subtitle: 'Birthdays, anniversaries & more', trailing: _AddEventLink()),
@@ -356,6 +347,55 @@ class _SectionHeader extends StatelessWidget {
 /// soft rounded corners and a real drop shadow — independent of app theme
 /// (including dark mode), matching an iOS context-menu/action-sheet feel
 /// rather than a stock Material dropdown.
+/// Houses the "Filter applies..." helper text and the Add Expense button
+/// (moved here from inside the Upcoming Expenses list in v2.2 — same button,
+/// same navigation, just repositioned). Row side-by-side when there's room;
+/// otherwise the button sits right-aligned above the helper text.
+class _FilterHelperRow extends StatelessWidget {
+  const _FilterHelperRow();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final helperText = Text(
+      'Filter applies to expenses & personal events below.',
+      style: TextStyle(fontSize: 12, color: colors.mutedForeground),
+    );
+    final addExpenseButton = FilledButton.icon(
+      onPressed: () => context.push('/expenses/new?type=expense'),
+      icon: const Icon(Icons.add, size: 20),
+      label: const Text('Add Expense'),
+      style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth >= 380) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: helperText),
+                const SizedBox(width: 12),
+                addExpenseButton,
+              ],
+            );
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(alignment: Alignment.centerRight, child: addExpenseButton),
+              const SizedBox(height: 8),
+              helperText,
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
 class _WindowPicker extends StatelessWidget {
   const _WindowPicker({required this.value, required this.onChanged});
   final int value;
