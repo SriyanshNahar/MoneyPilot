@@ -265,14 +265,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         const SizedBox(height: 8),
         const _FilterHelperRow(),
-        _SectionHeader(icon: Icons.calendar_month_outlined, tint: colors.primaryTint, tintFg: Theme.of(context).colorScheme.primary, title: 'Upcoming expenses', subtitle: 'Upcoming bills & scheduled expenses'),
+        _SectionHeader(
+          icon: Symbols.receipt_long_rounded,
+          tint: colors.primaryTint,
+          tintFg: Theme.of(context).colorScheme.primary,
+          title: 'Upcoming expenses',
+          subtitle: 'Bills, EMIs & scheduled expenses',
+          actionLabel: 'Add Expense',
+          onAction: () => context.push('/expenses/new?type=expense'),
+        ),
         if (upcoming.isEmpty)
           const _UpcomingExpensesEmptyState()
         else
           _ReminderList(rows: upcoming, emptyText: 'No expenses due in the next $_windowDays days.', addType: 'expense'),
         const SizedBox(height: 24),
 
-        _SectionHeader(icon: Icons.cake_outlined, tint: colors.accentTint, tintFg: const Color(0xFFF59E0B), title: 'Personal events', subtitle: 'Birthdays, anniversaries & more', trailing: _AddEventLink()),
+        _SectionHeader(
+          icon: Icons.cake_outlined,
+          tint: colors.accentTint,
+          tintFg: const Color(0xFFF59E0B),
+          title: 'Personal events',
+          subtitle: 'Birthdays, anniversaries & more',
+          actionLabel: 'Add Event',
+          onAction: () => context.push('/expenses/new?type=event'),
+        ),
         if (buckets.entries.where((e) => e.value.isNotEmpty).isEmpty)
           const _PersonalEventsEmptyState()
         else
@@ -309,14 +325,29 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 }
 
+/// Shared section header used across the Home page (Today's reminders,
+/// Upcoming expenses, Personal events) so sections that both have an
+/// "Add X" action render pixel-identically — icon badge, title/subtitle
+/// block and, when [actionLabel]/[onAction] are supplied, the same small
+/// tinted action chip. Only the icon/copy/callback should ever differ
+/// between call sites.
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.icon, required this.tint, required this.tintFg, required this.title, required this.subtitle, this.trailing});
+  const _SectionHeader({
+    required this.icon,
+    required this.tint,
+    required this.tintFg,
+    required this.title,
+    required this.subtitle,
+    this.actionLabel,
+    this.onAction,
+  });
   final IconData icon;
   final Color tint;
   final Color tintFg;
   final String title;
   final String subtitle;
-  final Widget? trailing;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -336,58 +367,28 @@ class _SectionHeader extends StatelessWidget {
               ],
             ),
           ),
-          ?trailing,
+          if (actionLabel != null && onAction != null) _HeaderActionChip(label: actionLabel!, onPressed: onAction!),
         ],
       ),
     );
   }
 }
 
-/// Houses the "Filter applies..." helper text and the Add Expense button,
-/// positioned above the Upcoming Expenses section (below the day-filter
-/// picker) so that section's header can mirror Personal Events' header
-/// exactly. Row side-by-side when there's room; otherwise the button sits
-/// right-aligned above the helper text.
+/// The "Filter applies..." helper text, positioned above the Upcoming
+/// Expenses section header, below the day-filter picker. The Add Expense
+/// action now lives in that header's own action chip (see _SectionHeader),
+/// matching Personal Events exactly, so this row is text-only.
 class _FilterHelperRow extends StatelessWidget {
   const _FilterHelperRow();
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final helperText = Text(
-      'Filter applies to expenses & personal events below.',
-      style: TextStyle(fontSize: 12, color: colors.mutedForeground),
-    );
-    final addExpenseButton = FilledButton.icon(
-      onPressed: () => context.push('/expenses/new?type=expense'),
-      icon: const Icon(Icons.add, size: 20),
-      label: const Text('Add Expense'),
-      style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
-    );
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth >= 380) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(child: helperText),
-                const SizedBox(width: 12),
-                addExpenseButton,
-              ],
-            );
-          }
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Align(alignment: Alignment.centerRight, child: addExpenseButton),
-              const SizedBox(height: 8),
-              helperText,
-            ],
-          );
-        },
+      child: Text(
+        'Filter applies to expenses & personal events below.',
+        style: TextStyle(fontSize: 12, color: colors.mutedForeground),
       ),
     );
   }
@@ -458,14 +459,21 @@ class _WindowPicker extends StatelessWidget {
   }
 }
 
-class _AddEventLink extends StatelessWidget {
-  const _AddEventLink();
+/// The small tinted action chip used in [_SectionHeader]'s trailing slot —
+/// shared by "Add event" and "Add expense" so both are a pixel-for-pixel
+/// match (same size, color, typography, ripple) with only the label and
+/// callback differing.
+class _HeaderActionChip extends StatelessWidget {
+  const _HeaderActionChip({required this.label, required this.onPressed});
+  final String label;
+  final VoidCallback onPressed;
+
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
-      onPressed: () => context.push('/expenses/new?type=event'),
+      onPressed: onPressed,
       icon: const Icon(Icons.add, size: 16),
-      label: const Text('Add event', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+      label: Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
       style: TextButton.styleFrom(
         backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -639,7 +647,7 @@ class _UpcomingExpensesEmptyState extends StatelessWidget {
           const Text('No upcoming expenses yet.', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600), textAlign: TextAlign.center),
           const SizedBox(height: 6),
           Text(
-            'Keep track of your upcoming bills\nand scheduled expenses.',
+            'Bills, EMIs & scheduled expenses\nwill appear here.',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 14, color: colors.mutedForeground, height: 1.4),
           ),
