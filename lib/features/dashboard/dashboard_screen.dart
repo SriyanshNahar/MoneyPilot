@@ -259,17 +259,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         const SizedBox(height: 20),
 
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: _SectionHeader(icon: Icons.calendar_month_outlined, tint: colors.primaryTint, tintFg: Theme.of(context).colorScheme.primary, title: 'Upcoming expenses', subtitle: 'Bills, EMIs and SIPs due soon'),
-            ),
-            _WindowPicker(value: _windowDays, onChanged: (v) => setState(() => _windowDays = v)),
-          ],
+        Align(
+          alignment: Alignment.centerRight,
+          child: _WindowPicker(value: _windowDays, onChanged: (v) => setState(() => _windowDays = v)),
         ),
+        const SizedBox(height: 8),
         const _FilterHelperRow(),
-        _ReminderList(rows: upcoming, emptyText: 'No expenses due in the next $_windowDays days.', addType: 'expense'),
+        _SectionHeader(icon: Icons.calendar_month_outlined, tint: colors.primaryTint, tintFg: Theme.of(context).colorScheme.primary, title: 'Upcoming expenses', subtitle: 'Upcoming bills & scheduled expenses'),
+        if (upcoming.isEmpty)
+          const _UpcomingExpensesEmptyState()
+        else
+          _ReminderList(rows: upcoming, emptyText: 'No expenses due in the next $_windowDays days.', addType: 'expense'),
         const SizedBox(height: 24),
 
         _SectionHeader(icon: Icons.cake_outlined, tint: colors.accentTint, tintFg: const Color(0xFFF59E0B), title: 'Personal events', subtitle: 'Birthdays, anniversaries & more', trailing: _AddEventLink()),
@@ -343,14 +343,11 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-/// Apple-style popup: solid white surface, black text, generous padding,
-/// soft rounded corners and a real drop shadow — independent of app theme
-/// (including dark mode), matching an iOS context-menu/action-sheet feel
-/// rather than a stock Material dropdown.
-/// Houses the "Filter applies..." helper text and the Add Expense button
-/// (moved here from inside the Upcoming Expenses list in v2.2 — same button,
-/// same navigation, just repositioned). Row side-by-side when there's room;
-/// otherwise the button sits right-aligned above the helper text.
+/// Houses the "Filter applies..." helper text and the Add Expense button,
+/// positioned above the Upcoming Expenses section (below the day-filter
+/// picker) so that section's header can mirror Personal Events' header
+/// exactly. Row side-by-side when there's room; otherwise the button sits
+/// right-aligned above the helper text.
 class _FilterHelperRow extends StatelessWidget {
   const _FilterHelperRow();
 
@@ -396,6 +393,10 @@ class _FilterHelperRow extends StatelessWidget {
   }
 }
 
+/// Apple-style popup: solid white surface, black text, generous padding,
+/// soft rounded corners and a real drop shadow — independent of app theme
+/// (including dark mode), matching an iOS context-menu/action-sheet feel
+/// rather than a stock Material dropdown.
 class _WindowPicker extends StatelessWidget {
   const _WindowPicker({required this.value, required this.onChanged});
   final int value;
@@ -587,6 +588,66 @@ class _PersonalEventsEmptyState extends StatelessWidget {
             onPressed: () => context.push('/expenses/new?type=event'),
             icon: const Icon(Icons.add, size: 18),
             label: const Text('Add Event'),
+            style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 20)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Mirrors [_PersonalEventsEmptyState] exactly (same card, sizes, spacing,
+/// typography, CTA style) so the two sections feel like one design system —
+/// only the icon, tint, copy and destination differ.
+class _UpcomingExpensesEmptyState extends StatelessWidget {
+  const _UpcomingExpensesEmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final primary = Theme.of(context).colorScheme.primary;
+    return PaisaCard(
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 72,
+            height: 72,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(colors: [colors.primaryTint, colors.primaryTint.withValues(alpha: 0)]),
+                  ),
+                ),
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(color: colors.primaryTint, shape: BoxShape.circle),
+                  child: Icon(Symbols.receipt_long_rounded, size: 26, color: primary),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text('No upcoming expenses yet.', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600), textAlign: TextAlign.center),
+          const SizedBox(height: 6),
+          Text(
+            'Keep track of your upcoming bills\nand scheduled expenses.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: colors.mutedForeground, height: 1.4),
+          ),
+          const SizedBox(height: 18),
+          FilledButton.icon(
+            onPressed: () => context.push('/expenses/new?type=expense'),
+            icon: const Icon(Icons.add, size: 18),
+            label: const Text('Add Expense'),
             style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 20)),
           ),
         ],
