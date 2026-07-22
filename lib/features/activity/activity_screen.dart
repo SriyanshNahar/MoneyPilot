@@ -298,9 +298,9 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
         Row(children: [
           Container(width: 36, height: 36, decoration: BoxDecoration(color: meta.bg, borderRadius: BorderRadius.circular(13)), child: Icon(lucideIcon(meta.icon), size: 18, color: meta.color)),
           const SizedBox(width: 8),
-          Text(bucket, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+          Text(bucket, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
           const Spacer(),
-          Text('${rows.length} · ${formatINRCompact(sum)}', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
+          Text('${rows.length} · ${formatINRCompact(sum)}', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colors.mutedForeground)),
         ]),
         const SizedBox(height: 8),
         for (final r in rows) ...[_buildRow(context, r), const SizedBox(height: 8)],

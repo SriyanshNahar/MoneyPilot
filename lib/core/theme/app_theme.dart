@@ -103,23 +103,24 @@ class AppTheme {
               fontSize: 36,
               letterSpacing: -0.5,
             ),
+            // Page titles (Dashboard/Activity/Money Lab/Settings headers) — Bold.
             headlineMedium: base.textTheme.headlineMedium?.copyWith(
               fontFamily: 'Manrope',
               fontFamilyFallback: _displayFontFamilyFallback,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               fontSize: 30,
               letterSpacing: -0.4,
             ),
-            // Card / section titles.
+            // Section / card titles — SemiBold, one step down from page titles.
             titleLarge: base.textTheme.titleLarge?.copyWith(
               fontFamily: 'Manrope',
               fontFamilyFallback: _displayFontFamilyFallback,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
               fontSize: 24,
               letterSpacing: -0.3,
             ),
             titleMedium: base.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
               fontSize: 18,
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/grouped_dropdown.dart';
 import '../../core/widgets/paisa_card.dart';
 import '../shell/app_shell.dart';
 import 'ai_coach_chat.dart';
@@ -98,7 +99,7 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
                   ]),
                 ),
                 const SizedBox(height: 10),
-                const Text('What makes your money grow?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Colors.white)),
+                const Text('What makes your money grow?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
                 const SizedBox(height: 4),
                 const Text('Pick a calculator below or chat with the AI Coach for personalised tips.', style: TextStyle(fontSize: 15, color: Colors.white70)),
               ],
@@ -110,46 +111,13 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
             const SizedBox(width: 6),
             Text('Calculators · $_totalCalcCount', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ]),
-          const SizedBox(height: 8),
-          PaisaCard(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Theme(
-              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (final g in _calcGroups)
-                    ExpansionTile(
-                      initiallyExpanded: g.items.any((c) => c.key == _activeCalc),
-                      tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-                      childrenPadding: EdgeInsets.zero,
-                      title: Text(
-                        g.title,
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black),
-                      ),
-                      children: [
-                        for (final c in g.items)
-                          ListTile(
-                            selected: c.key == _activeCalc,
-                            selectedTileColor: colors.primaryTint.withValues(alpha: 0.5),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
-                            visualDensity: const VisualDensity(vertical: 1),
-                            title: Text(
-                              c.label,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: c.key == _activeCalc ? scheme.primary : null,
-                              ),
-                            ),
-                            trailing: c.key == _activeCalc ? Icon(Icons.check_circle, size: 20, color: scheme.primary) : null,
-                            onTap: () => setState(() => _activeCalc = c.key),
-                          ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
+          const SizedBox(height: 10),
+          Text('CALCULATOR', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.6, color: colors.mutedForeground)),
+          const SizedBox(height: 6),
+          GroupedDropdownField(
+            groups: [for (final g in _calcGroups) DropdownGroupData(g.title, [for (final c in g.items) DropdownItemData(c.key, c.label)])],
+            value: _activeCalc,
+            onChanged: (v) => setState(() => _activeCalc = v),
           ),
           const SizedBox(height: 12),
           Builder(builder: _activeBuilder),
@@ -243,7 +211,7 @@ class _MoneyLabScreenState extends State<MoneyLabScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('FIRM', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: scheme.primary, letterSpacing: 0.4)),
-                                    const Text('7Sapience Financial Advisory', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+                                    const Text('7Sapience Financial Advisory', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
                                   ],
                                 ),
                               ),

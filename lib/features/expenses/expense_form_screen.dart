@@ -6,6 +6,7 @@ import '../../core/constants/categories.dart';
 import '../../core/offline/connectivity_provider.dart';
 import '../../core/offline/offline_cache.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/grouped_dropdown.dart';
 import '../../data/repositories/expenses_repository.dart';
 import '../auth/auth_controller.dart';
 
@@ -366,27 +367,13 @@ class _CategoryDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = <DropdownMenuItem<String>>[];
+    final dropdownGroups = <DropdownGroupData>[];
     for (final group in groups) {
       final catsInGroup = expenseCategories.where((c) => c.group == group).toList();
       if (catsInGroup.isEmpty) continue;
-      items.add(DropdownMenuItem<String>(
-        enabled: false,
-        value: '__group_$group',
-        child: Text(group, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
-      ));
-      for (final c in catsInGroup) {
-        items.add(DropdownMenuItem<String>(value: c.key, child: Padding(padding: const EdgeInsets.only(left: 8), child: Text(c.label))));
-      }
+      dropdownGroups.add(DropdownGroupData(group, [for (final c in catsInGroup) DropdownItemData(c.key, c.label)]));
     }
-    return DropdownButtonFormField<String>(
-      initialValue: value,
-      isExpanded: true,
-      items: items,
-      onChanged: (v) {
-        if (v != null && !v.startsWith('__group_')) onChanged(v);
-      },
-    );
+    return GroupedDropdownField(groups: dropdownGroups, value: value, onChanged: onChanged);
   }
 }
 

@@ -246,10 +246,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         Text(greetingForNow().toUpperCase(), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, letterSpacing: 0.6, color: colors.mutedForeground)),
         const SizedBox(height: 2),
         Text('$firstName 👋', style: Theme.of(context).textTheme.headlineMedium),
-        const SizedBox(height: 16),
-
-        const _MoneyToolsRow(),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
 
         _SectionHeader(icon: Icons.watch_later_outlined, tint: context.colors.destructiveTint, tintFg: Theme.of(context).colorScheme.error, title: "Today's reminders", subtitle: 'Everything due today'),
         _ReminderList(
@@ -276,6 +273,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           child: Text('Filter applies to expenses & personal events below.', style: TextStyle(fontSize: 12, color: colors.mutedForeground)),
         ),
         _ReminderList(rows: upcoming, emptyText: 'No expenses due in the next $_windowDays days.', addType: 'expense'),
+        const SizedBox(height: 10),
+        FilledButton.icon(
+          onPressed: () => context.push('/expenses/new?type=expense'),
+          icon: const Icon(Icons.add, size: 20),
+          label: const Text('Add Expense'),
+        ),
         const SizedBox(height: 24),
 
         _SectionHeader(icon: Icons.cake_outlined, tint: colors.accentTint, tintFg: const Color(0xFFF59E0B), title: 'Personal events', subtitle: 'Birthdays, anniversaries & more', trailing: _AddEventLink()),
@@ -310,42 +313,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             ],
           ),
         const SizedBox(height: 24),
-      ],
-    );
-  }
-}
-
-/// Quick-access row to the four new v2.1 money-tracking modules.
-class _MoneyToolsRow extends StatelessWidget {
-  const _MoneyToolsRow();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final items = [
-      (label: 'Goals', icon: Symbols.flag_rounded, tint: colors.primaryTint, fg: Theme.of(context).colorScheme.primary, path: '/goals'),
-      (label: 'Investments', icon: Symbols.trending_up_rounded, tint: colors.secondaryTint, fg: const Color(0xFF0F766E), path: '/investments'),
-      (label: 'Loans', icon: Symbols.account_balance_rounded, tint: colors.destructiveTint, fg: Theme.of(context).colorScheme.error, path: '/loans'),
-      (label: 'Subscriptions', icon: Symbols.subscriptions_rounded, tint: colors.accentTint, fg: const Color(0xFFF59E0B), path: '/subscriptions'),
-    ];
-    return Row(
-      children: [
-        for (final item in items) ...[
-          Expanded(
-            child: PaisaCard(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              onTap: () => context.push(item.path),
-              child: Column(
-                children: [
-                  Container(width: 40, height: 40, decoration: BoxDecoration(color: item.tint, borderRadius: BorderRadius.circular(12)), child: Icon(item.icon, size: 20, color: item.fg)),
-                  const SizedBox(height: 6),
-                  Text(item.label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
-                ],
-              ),
-            ),
-          ),
-          if (item != items.last) const SizedBox(width: 8),
-        ],
       ],
     );
   }

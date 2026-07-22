@@ -157,7 +157,7 @@ class _PrivacySheetState extends State<PrivacySheet> {
             ),
           ),
           const SizedBox(height: 16),
-          const Text('Recovery information', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+          const Text('Recovery information', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
           const SizedBox(height: 10),
           Text('RECOVERY EMAIL', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground)),
           const SizedBox(height: 6),
@@ -181,7 +181,7 @@ class _PrivacySheetState extends State<PrivacySheet> {
             child: FilledButton(onPressed: _saving ? null : _saveRecovery, child: _saving ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Text('Save privacy settings')),
           ),
           const SizedBox(height: 20),
-          const Text('Your data', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+          const Text('Your data', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
           const SizedBox(height: 10),
           InkWell(
             onTap: _exporting ? null : _exportData,
