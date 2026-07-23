@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/notifications/notifications_service.dart';
@@ -41,6 +42,23 @@ class _MoneyPilotAppState extends ConsumerState<MoneyPilotApp> {
       darkTheme: AppTheme.dark,
       themeMode: themeState.themeMode,
       routerConfig: router,
+      builder: (context, child) {
+        // Transparent system status/navigation bars — otherwise Android
+        // paints its own opaque bar behind the floating bottom nav, which
+        // reads as a stray extra white layer beneath it.
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+            statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+            systemNavigationBarColor: Colors.transparent,
+            systemNavigationBarDividerColor: Colors.transparent,
+            systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+          ),
+          child: child!,
+        );
+      },
     );
   }
 }

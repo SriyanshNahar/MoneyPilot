@@ -141,7 +141,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       child: ListView(
         children: [
           // Page header (v2.1) — Settings didn't have a title at all before.
-          const Text('Settings', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+          const Text('Profile', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
           Text('Manage your account, subscription and preferences.', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
           const SizedBox(height: 16),

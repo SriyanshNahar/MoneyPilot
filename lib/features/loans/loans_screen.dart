@@ -8,6 +8,7 @@ import '../../core/utils/format.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/loading_quote.dart';
 import '../../core/widgets/paisa_card.dart';
+import '../../core/widgets/premium_dropdown.dart';
 import '../../data/models/loan.dart';
 import '../../data/repositories/loans_repository.dart';
 import '../auth/auth_controller.dart';
@@ -326,10 +327,10 @@ class _LoanFormSheetState extends State<_LoanFormSheet> {
             const SizedBox(height: 16),
             TextField(controller: _lender, decoration: const InputDecoration(labelText: 'Lender', hintText: 'e.g. HDFC Bank')),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _loanType,
-              decoration: const InputDecoration(labelText: 'Loan type'),
-              items: _loanTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+            PremiumDropdownField<String>(
+              value: _loanType,
+              items: _loanTypes,
+              labelText: 'Loan type',
               onChanged: (v) => setState(() => _loanType = v ?? _loanTypes.first),
             ),
             const SizedBox(height: 12),

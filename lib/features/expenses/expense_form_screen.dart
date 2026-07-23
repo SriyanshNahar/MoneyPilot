@@ -7,6 +7,7 @@ import '../../core/offline/connectivity_provider.dart';
 import '../../core/offline/offline_cache.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/grouped_dropdown.dart';
+import '../../core/widgets/premium_dropdown.dart';
 import '../../data/repositories/expenses_repository.dart';
 import '../auth/auth_controller.dart';
 
@@ -387,11 +388,11 @@ class _Dropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      initialValue: value,
-      isExpanded: true,
-      hint: hint != null ? Text(hint!) : null,
-      items: items.map((i) => DropdownMenuItem(value: i, child: Text(labels?[i] ?? i))).toList(),
+    return PremiumDropdownField<String>(
+      value: value,
+      items: items,
+      hint: hint,
+      labelOf: (i) => labels?[i] ?? i,
       onChanged: onChanged,
     );
   }

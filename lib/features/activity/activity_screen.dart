@@ -9,6 +9,7 @@ import '../../core/offline/offline_cache.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/icon_map.dart';
+import '../../core/widgets/grouped_dropdown.dart';
 import '../../core/widgets/loading_quote.dart';
 import '../../core/widgets/paisa_card.dart';
 import '../../data/repositories/expenses_repository.dart';
@@ -240,14 +241,17 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                 onChanged: (v) => setState(() => _query = v),
               ),
               const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                initialValue: _cat,
-                isExpanded: true,
-                items: [
-                  const DropdownMenuItem(value: 'all', child: Text('All categories')),
-                  ...expenseCategories.map((c) => DropdownMenuItem(value: c.key, child: Text(c.label))),
+              GroupedDropdownField(
+                leadingItems: const [DropdownItemData('all', 'All categories')],
+                groups: [
+                  for (final groupName in {for (final c in expenseCategories) c.group})
+                    DropdownGroupData(groupName, [
+                      for (final c in expenseCategories)
+                        if (c.group == groupName) DropdownItemData(c.key, c.label),
+                    ]),
                 ],
-                onChanged: (v) => setState(() => _cat = v ?? 'all'),
+                value: _cat,
+                onChanged: (v) => setState(() => _cat = v),
               ),
               const SizedBox(height: 12),
               PaisaCard(

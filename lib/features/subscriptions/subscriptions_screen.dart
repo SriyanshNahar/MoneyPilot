@@ -8,6 +8,7 @@ import '../../core/utils/format.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/loading_quote.dart';
 import '../../core/widgets/paisa_card.dart';
+import '../../core/widgets/premium_dropdown.dart';
 import '../../data/models/subscription.dart';
 import '../../data/repositories/subscriptions_repository.dart';
 import '../auth/auth_controller.dart';
@@ -323,10 +324,11 @@ class _SubscriptionFormSheetState extends State<_SubscriptionFormSheet> {
             const SizedBox(height: 12),
             TextField(controller: _amount, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Amount (₹)')),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _cycle,
-              decoration: const InputDecoration(labelText: 'Billing cycle'),
-              items: _cycles.map((c) => DropdownMenuItem(value: c, child: Text('${c[0].toUpperCase()}${c.substring(1)}'))).toList(),
+            PremiumDropdownField<String>(
+              value: _cycle,
+              items: _cycles,
+              labelText: 'Billing cycle',
+              labelOf: (c) => '${c[0].toUpperCase()}${c.substring(1)}',
               onChanged: (v) => setState(() => _cycle = v ?? _cycles.first),
             ),
             const SizedBox(height: 12),

@@ -8,6 +8,7 @@ import '../../core/utils/format.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/loading_quote.dart';
 import '../../core/widgets/paisa_card.dart';
+import '../../core/widgets/premium_dropdown.dart';
 import '../../data/models/investment.dart';
 import '../../data/repositories/investments_repository.dart';
 import '../auth/auth_controller.dart';
@@ -298,10 +299,10 @@ class _InvestmentFormSheetState extends State<_InvestmentFormSheet> {
             const SizedBox(height: 16),
             TextField(controller: _name, decoration: const InputDecoration(labelText: 'Name', hintText: 'e.g. Axis Bluechip Fund')),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _invType,
-              decoration: const InputDecoration(labelText: 'Type'),
-              items: _invTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+            PremiumDropdownField<String>(
+              value: _invType,
+              items: _invTypes,
+              labelText: 'Type',
               onChanged: (v) => setState(() => _invType = v ?? _invTypes.first),
             ),
             const SizedBox(height: 12),

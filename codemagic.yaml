@@ -1,0 +1,73 @@
+workflows:
+  android-debug:
+    name: MoneyPilot Android Debug
+    max_build_duration: 30
+    instance_type: linux_x2
+    environment:
+      flutter: stable
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Flutter analyze
+        script: flutter analyze
+      - name: Flutter test
+        script: flutter test
+      - name: Build debug APK
+        script: flutter build apk --debug
+    artifacts:
+      # Only the final app APK — not the default broad glob Codemagic
+      # templates use, which also picks up per-plugin/example-project APKs.
+      - build/app/outputs/flutter-apk/app-debug.apk
+
+  android-release:
+    name: MoneyPilot Android Release
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      flutter: stable
+      android_signing:
+        - moneypilot_upload_keystore # Codemagic keystore reference — see notes below
+      vars:
+        PACKAGE_NAME: "io.moneypilot.app"
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: "v*.*.*"
+          include: true
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Flutter analyze
+        script: flutter analyze
+      - name: Flutter test
+        script: flutter test
+      - name: Write key.properties from the Codemagic-managed keystore
+        script: |
+          # $CM_KEYSTORE_PATH / $CM_KEYSTORE_PASSWORD / $CM_KEY_ALIAS / $CM_KEY_PASSWORD
+          # are exported automatically because `android_signing` above
+          # references the keystore uploaded under that name in
+          # Codemagic > Team settings > Code signing identities > Android.
+          cat >"$CM_BUILD_DIR/android/key.properties" <<EOF
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyPassword=$CM_KEY_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          storeFile=$CM_KEYSTORE_PATH
+          EOF
+      - name: Build release APK
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+    publishing:
+      email:
+        recipients:
+          - sriyanshnahar@gmail.com
+        notify:
+          success: true
+          failure: true
