@@ -48,6 +48,11 @@ class CalcShell extends StatelessWidget {
 }
 
 /// A responsive row of fields/results (mirrors the `grid grid-cols-N` wrappers).
+/// Uses the actual available width from the immediate parent (via
+/// LayoutBuilder) rather than the full screen width, so sizing stays
+/// accurate inside the card's own padding on every screen size — and wraps
+/// items centered as a group so leftover space in the last row doesn't read
+/// as "left aligned".
 class CalcGrid extends StatelessWidget {
   const CalcGrid({super.key, required this.children, this.columns = 2});
   final List<Widget> children;
@@ -55,13 +60,19 @@ class CalcGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: children.map((c) {
-        final width = (MediaQuery.of(context).size.width - 32 - 32 - (columns - 1) * 8) / columns;
-        return SizedBox(width: width.clamp(90, 400), child: c);
-      }).toList(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = (constraints.maxWidth - (columns - 1) * 8) / columns;
+        return Wrap(
+          alignment: WrapAlignment.center,
+          runAlignment: WrapAlignment.center,
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final c in children) SizedBox(width: width.clamp(90, 400), child: c),
+          ],
+        );
+      },
     );
   }
 }
@@ -111,15 +122,26 @@ class _NumFieldState extends State<NumField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(widget.label, style: const TextStyle(fontSize: 14)),
-            ValueListenableBuilder<TextEditingValue>(
-              valueListenable: _controller,
-              builder: (context, value, _) {
-                final n = double.tryParse(value.text) ?? 0;
-                return Text(_display(n), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: primary));
-              },
+            Expanded(
+              child: Text(widget.label, style: const TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis),
+            ),
+            const SizedBox(width: 6),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 140),
+              child: ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _controller,
+                builder: (context, value, _) {
+                  final n = double.tryParse(value.text) ?? 0;
+                  return Text(
+                    _display(n),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: primary),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    textAlign: TextAlign.right,
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -156,11 +178,21 @@ class CalcResult extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(label.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.3)),
+          Text(
+            label.toUpperCase(),
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.3),
+          ),
           const SizedBox(height: 2),
-          Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: primary ? scheme.primary : null)),
+          Text(
+            value,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: primary ? scheme.primary : null),
+          ),
         ],
       ),
     );
