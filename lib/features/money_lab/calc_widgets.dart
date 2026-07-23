@@ -6,6 +6,9 @@ import '../../core/widgets/paisa_card.dart';
 
 /// Shared shell + input/result widgets for the Money Lab calculators —
 /// direct port of the CalcShell/Field/Result helpers in Calculators.tsx.
+/// Spacing/radius values below are matched against that source file's
+/// Tailwind classes (this project's `--radius` custom property is 18px, so
+/// `rounded-lg` = 18px and `rounded-xl` = 22px — not the Tailwind defaults).
 class CalcShell extends StatelessWidget {
   const CalcShell({super.key, required this.icon, required this.title, required this.subtitle, required this.children});
   final IconData icon;
@@ -25,7 +28,7 @@ class CalcShell extends StatelessWidget {
             Container(
               width: 36,
               height: 36,
-              decoration: BoxDecoration(color: colors.primaryTint, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(color: colors.primaryTint, borderRadius: BorderRadius.circular(18)),
               child: Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
             ),
             const SizedBox(width: 10),
@@ -47,12 +50,14 @@ class CalcShell extends StatelessWidget {
   }
 }
 
-/// A responsive row of fields/results (mirrors the `grid grid-cols-N` wrappers).
-/// Uses the actual available width from the immediate parent (via
-/// LayoutBuilder) rather than the full screen width, so sizing stays
-/// accurate inside the card's own padding on every screen size — and wraps
-/// items centered as a group so leftover space in the last row doesn't read
-/// as "left aligned".
+/// A true equal-width, equal-height grid row (mirrors the source's CSS
+/// `grid grid-cols-N gap-2` exactly, rather than approximating it with a
+/// wrapping list of clamped-width boxes). Children are chunked into rows of
+/// [columns]; every cell in a row gets exactly 1/[columns] of the available
+/// width via `Expanded`, so cells can never overflow regardless of screen
+/// size, and every row's cells share one height via `IntrinsicHeight`. An
+/// incomplete final row is padded with invisible spacer cells so its filled
+/// columns stay aligned with the rows above instead of stretching wider.
 class CalcGrid extends StatelessWidget {
   const CalcGrid({super.key, required this.children, this.columns = 2});
   final List<Widget> children;
@@ -60,20 +65,25 @@ class CalcGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = (constraints.maxWidth - (columns - 1) * 8) / columns;
-        return Wrap(
-          alignment: WrapAlignment.center,
-          runAlignment: WrapAlignment.center,
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (final c in children) SizedBox(width: width.clamp(90, 400), child: c),
-          ],
-        );
-      },
-    );
+    final rows = <Widget>[];
+    for (var i = 0; i < children.length; i += columns) {
+      final rowItems = children.skip(i).take(columns).toList();
+      if (rows.isNotEmpty) rows.add(const SizedBox(height: 8));
+      rows.add(
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var j = 0; j < columns; j++) ...[
+                if (j > 0) const SizedBox(width: 8),
+                Expanded(child: j < rowItems.length ? rowItems[j] : const SizedBox.shrink()),
+              ],
+            ],
+          ),
+        ),
+      );
+    }
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: rows);
   }
 }
 
@@ -123,12 +133,16 @@ class _NumFieldState extends State<NumField> {
       children: [
         Row(
           children: [
+            // A true grid cell (see CalcGrid) already gives this its own
+            // proportional share of the row — plenty of room for a normal
+            // label in normal use. The ellipsis stays only as a backstop
+            // for pathological cases (e.g. very large formatted numbers
+            // near the calculator's own max bound), never the primary fit.
             Expanded(
               child: Text(widget.label, style: const TextStyle(fontSize: 14), overflow: TextOverflow.ellipsis),
             ),
             const SizedBox(width: 6),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 140),
+            Flexible(
               child: ValueListenableBuilder<TextEditingValue>(
                 valueListenable: _controller,
                 builder: (context, value, _) {
@@ -145,7 +159,7 @@ class _NumFieldState extends State<NumField> {
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         SizedBox(
           height: 40,
           child: TextField(
@@ -172,12 +186,14 @@ class CalcResult extends StatelessWidget {
     final colors = context.colors;
     final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(10),
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: primary ? colors.primaryTint : scheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(22),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(

@@ -28,7 +28,7 @@ class _SipCalculatorState extends State<SipCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 40, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Returns', value: rate, suffix: '%', min: 1, max: 30, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(columns: 3, children: [
         CalcResult(label: 'Invested', value: formatINRCompact(invested), primary: false),
         CalcResult(label: 'Gain', value: formatINRCompact(gain), primary: false),
@@ -64,7 +64,7 @@ class _StepUpSipCalculatorState extends State<StepUpSipCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 40, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Returns', value: rate, suffix: '%', min: 1, max: 30, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Invested', value: formatINRCompact(inv), primary: false),
         CalcResult(label: 'Future', value: formatINRCompact(fv)),
@@ -96,7 +96,7 @@ class _SwpCalculatorState extends State<SwpCalculator> {
         NumField(label: 'Returns', value: rate, suffix: '%', min: 1, max: 20, onChanged: (v) => setState(() => rate = v)),
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 40, onChanged: (v) => setState(() => years = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcResult(label: 'Corpus after period', value: formatINRCompact(remaining)),
     ]);
   }
@@ -119,7 +119,7 @@ class _CagrCalculatorState extends State<CagrCalculator> {
         NumField(label: 'Final', value: end, suffix: '₹', min: 1000, max: 100000000, onChanged: (v) => setState(() => end = v)),
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 50, onChanged: (v) => setState(() => years = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcResult(label: 'CAGR', value: '${cagr.toStringAsFixed(2)}%'),
     ]);
   }
@@ -145,7 +145,7 @@ class _EmiCalculatorState extends State<EmiCalculator> {
         NumField(label: 'Tenure', value: years, suffix: 'y', min: 1, max: 30, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Rate', value: rate, suffix: '%', min: 1, max: 30, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(columns: 3, children: [
         CalcResult(label: 'EMI', value: formatINRCompact(emi)),
         CalcResult(label: 'Interest', value: formatINRCompact(interest), primary: false),
@@ -173,7 +173,7 @@ class _CompoundCalculatorState extends State<CompoundCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 40, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Rate', value: rate, suffix: '%', min: 1, max: 30, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Gain', value: formatINRCompact(gain), primary: false),
         CalcResult(label: 'Maturity', value: formatINRCompact(future)),
@@ -199,7 +199,7 @@ class _SimpleInterestCalculatorState extends State<SimpleInterestCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 40, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Rate', value: rate, suffix: '%', min: 1, max: 30, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Interest', value: formatINRCompact(interest), primary: false),
         CalcResult(label: 'Total', value: formatINRCompact(principal + interest)),
@@ -225,7 +225,7 @@ class _FdCalculatorState extends State<FdCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 20, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Rate', value: rate, suffix: '%', min: 1, max: 15, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Interest', value: formatINRCompact(future - principal), primary: false),
         CalcResult(label: 'Maturity', value: formatINRCompact(future)),
@@ -253,7 +253,7 @@ class _RdCalculatorState extends State<RdCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 10, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Rate', value: rate, suffix: '%', min: 1, max: 15, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Invested', value: formatINRCompact(invested), primary: false),
         CalcResult(label: 'Maturity', value: formatINRCompact(fv)),
@@ -282,7 +282,7 @@ class _PpfCalculatorState extends State<PpfCalculator> {
         NumField(label: 'Yearly', value: yearly, suffix: '₹', min: 500, max: 150000, onChanged: (v) => setState(() => yearly = v)),
         NumField(label: 'Years', value: years, suffix: 'y', min: 15, max: 50, onChanged: (v) => setState(() => years = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Invested', value: formatINRCompact(yearly * years), primary: false),
         CalcResult(label: 'Maturity', value: formatINRCompact(bal)),
@@ -305,7 +305,7 @@ class _NscCalculatorState extends State<NscCalculator> {
     final future = principal * math.pow(1 + rate / 100, years);
     return CalcShell(icon: Icons.receipt_long_outlined, title: 'NSC', subtitle: 'National Savings Certificate · 7.7% · 5y', children: [
       NumField(label: 'Investment', value: principal, suffix: '₹', min: 1000, max: 5000000, onChanged: (v) => setState(() => principal = v)),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Interest', value: formatINRCompact(future - principal), primary: false),
         CalcResult(label: 'Maturity', value: formatINRCompact(future)),
@@ -340,7 +340,7 @@ class _EpfCalculatorState extends State<EpfCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 40, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Salary ↑', value: growth, suffix: '%', min: 0, max: 20, onChanged: (v) => setState(() => growth = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcResult(label: 'Retirement corpus', value: formatINRCompact(bal)),
     ]);
   }
@@ -367,7 +367,7 @@ class _NpsCalculatorState extends State<NpsCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 40, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Returns', value: rate, suffix: '%', min: 4, max: 15, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(columns: 3, children: [
         CalcResult(label: 'Corpus', value: formatINRCompact(corpus)),
         CalcResult(label: '60% Lumpsum', value: formatINRCompact(lumpsum), primary: false),
@@ -396,7 +396,7 @@ class _ApyCalculatorState extends State<ApyCalculator> {
         NumField(label: 'Pension/mo', value: pension, suffix: '₹', min: 1000, max: 5000, onChanged: (v) => setState(() => pension = v)),
         NumField(label: 'Your age', value: age, suffix: 'y', min: 18, max: 39, onChanged: (v) => setState(() => age = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcResult(label: 'Approx contribution / month', value: formatINRCompact(contrib)),
     ]);
   }
@@ -418,7 +418,7 @@ class _GratuityCalculatorState extends State<GratuityCalculator> {
         NumField(label: 'Last basic', value: salary, suffix: '₹', min: 5000, max: 500000, onChanged: (v) => setState(() => salary = v)),
         NumField(label: 'Years served', value: years, suffix: 'y', min: 5, max: 40, onChanged: (v) => setState(() => years = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcResult(label: 'Gratuity', value: formatINRCompact(gratuity)),
     ]);
   }
@@ -444,7 +444,7 @@ class _SsyCalculatorState extends State<SsyCalculator> {
     }
     return CalcShell(icon: Icons.school_outlined, title: 'SSY', subtitle: 'Sukanya Samriddhi Yojana · 8.2%', children: [
       NumField(label: 'Yearly', value: yearly, suffix: '₹', min: 250, max: 150000, onChanged: (v) => setState(() => yearly = v)),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Invested', value: formatINRCompact(yearly * 15), primary: false),
         CalcResult(label: 'Maturity (21y)', value: formatINRCompact(bal)),
@@ -473,7 +473,7 @@ class _ElssCalculatorState extends State<ElssCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 3, max: 30, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Returns', value: rate, suffix: '%', min: 5, max: 25, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(columns: 3, children: [
         CalcResult(label: 'Future', value: formatINRCompact(fv)),
         CalcResult(label: 'Invested', value: formatINRCompact(invested), primary: false),
@@ -506,7 +506,7 @@ class _RetirementCalculatorState extends State<RetirementCalculator> {
         NumField(label: 'Inflation', value: infl, suffix: '%', min: 2, max: 12, onChanged: (v) => setState(() => infl = v)),
         NumField(label: 'Post return', value: postReturn, suffix: '%', min: 3, max: 15, onChanged: (v) => setState(() => postReturn = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Future ₹/mo', value: formatINRCompact(futureExpense), primary: false),
         CalcResult(label: 'Corpus needed', value: formatINRCompact(math.max(0, corpus))),
@@ -539,7 +539,7 @@ class _IncomeTaxCalculatorState extends State<IncomeTaxCalculator> {
     final tax = t * 1.04;
     return CalcShell(icon: Icons.receipt_long_outlined, title: 'Income Tax', subtitle: 'New regime FY 2024-25 (approx)', children: [
       NumField(label: 'Annual income', value: income, suffix: '₹', min: 100000, max: 50000000, onChanged: (v) => setState(() => income = v)),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Tax', value: formatINRCompact(tax)),
         CalcResult(label: 'Take-home', value: formatINRCompact(income - tax), primary: false),
@@ -566,7 +566,7 @@ class _InflationCalculatorState extends State<InflationCalculator> {
         NumField(label: 'Years', value: years, suffix: 'y', min: 1, max: 40, onChanged: (v) => setState(() => years = v)),
         NumField(label: 'Inflation', value: rate, suffix: '%', min: 1, max: 15, onChanged: (v) => setState(() => rate = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcGrid(children: [
         CalcResult(label: 'Future cost', value: formatINRCompact(future)),
         CalcResult(label: "Today's value of ₹", value: formatINRCompact(purchasing), primary: false),
@@ -593,7 +593,7 @@ class _HraCalculatorState extends State<HraCalculator> {
         NumField(label: 'Rent paid', value: rent, suffix: '₹', min: 0, max: 500000, onChanged: (v) => setState(() => rent = v)),
         NumField(label: 'Metro (1/0)', value: metro, min: 0, max: 1, onChanged: (v) => setState(() => metro = v)),
       ]),
-      const SizedBox(height: 10),
+      const SizedBox(height: 12),
       CalcResult(label: 'Exempt HRA / month', value: formatINRCompact(math.max(0, exempt))),
     ]);
   }
