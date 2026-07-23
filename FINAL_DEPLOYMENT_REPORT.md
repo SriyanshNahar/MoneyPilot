@@ -1,6 +1,18 @@
 # MoneyPilot — Final Deployment Report
 
-_Latest pass: pixel-matched every Money Lab calculator to the original React/Lovable source (equal-width grid cells, verified spacing/radius values), added an automated multi-width layout test covering all 21 calculators. Earlier passes kept below as history._
+_Latest pass: Backend Phase 2 — production authentication verification. Live-tested email/password signup end-to-end on the Android emulator (real throwaway account, confirmed server-side via direct API call), confirmed the app correctly surfaces "Email not confirmed"; corrected an earlier (incorrect) claim that Apple Sign-In needed the same Dashboard fix as Google — testing the actual endpoint the app uses shows Apple already has some provider config in place, unlike Google, which still needs its OAuth Client ID/Secret entered. Wrote a Dashboard configuration guide, an Authentication Verification Report, and a Login Test Report (all in `supabase/`). Earlier passes kept below as history._
+
+## Backend Phase 2 — Authentication Verification (2026-07-23)
+
+See the three dedicated documents for full detail — this section is a pointer, not a duplicate:
+
+- **`supabase/AUTH_DASHBOARD_CONFIG_GUIDE.md`** — exact Google Cloud Console + Apple Developer Portal + Supabase Dashboard steps, including the real extracted Android release/debug SHA-1/SHA-256 fingerprints (confirmed not required for this app's current web-redirect Google flow, but provided for reference).
+- **`supabase/AUTHENTICATION_VERIFICATION_REPORT.md`** — Implement/Verify checklist with an honest per-item status (✅/⚠️/❌) and the exact evidence behind each, plus a full write-up correcting the earlier Apple-endpoint mixup.
+- **`supabase/LOGIN_TEST_REPORT.md`** — the live emulator test transcript: what was actually tapped/typed, what the server actually returned, and the `adb`/PowerShell/autofill friction encountered along the way (none of it an app bug).
+
+**Headline finding**: Google Sign-In is still blocked by a missing OAuth Client ID/Secret in the Supabase Dashboard (unchanged since Phase 1 — confirmed still live via a direct `curl` to `/auth/v1/authorize?provider=google` returning `400 "missing OAuth secret"`). Apple Sign-In's actual endpoint (`/auth/v1/token?grant_type=id_token`, not the redirect endpoint) returns a token-parsing error rather than a missing-provider error, indicating it likely already has some Dashboard config — a correction to earlier reporting, which had assumed both providers were in the same broken state based on testing the wrong endpoint for Apple.
+
+**What was live-verified vs. not**: fresh email/password signup and the app's handling of an unconfirmed-email sign-in attempt were both tested live and confirmed working. Existing Session, Logout, and Profile Sync were not live-tested this pass — they require a signed-in session, and the only account safely available (a throwaway `@example.com` address) can never confirm its email to reach one; signing in as the real user instead was ruled out per standing instructions. iOS is untested — no macOS/Xcode available from this Windows environment. All of this is disclosed in detail, not glossed over, in the Login Test Report.
 
 ## Repository
 
