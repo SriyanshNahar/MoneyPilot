@@ -19,8 +19,13 @@ supabase link --project-ref rfrddfjtmrtfhqlvvqzf
 supabase functions deploy ai-chat
 supabase functions deploy razorpay-create-order
 supabase functions deploy razorpay-verify-payment
+supabase functions deploy razorpay-webhook
 supabase functions deploy send-alert
 ```
+
+See `../BACKEND_DEPLOYMENT_GUIDE.md` (repo root of this `supabase/` folder) for
+the full Phase 1 deployment sequence — migrations, storage, secrets and
+Supabase Dashboard steps in the order they need to run.
 
 ## Required secrets
 
@@ -41,12 +46,17 @@ numbers, not generic advice.
 `SUPABASE_URL` / `SUPABASE_ANON_KEY` are injected automatically by the
 Supabase platform at runtime — no need to set them manually.
 
-## Storage bucket
+## Storage buckets
 
-Avatar uploads (Settings → profile photo) use a public-read, owner-write
-`avatars` storage bucket, same as the React app. If it doesn't already exist
-on the project:
+Both buckets are **private** — the app never reads via a public URL, only
+via `storage.createSignedUrl()`, with objects scoped to a
+`<auth.uid()>/...` folder per user:
 
-```bash
-supabase storage buckets create avatars --public
-```
+- `avatars` — profile photo (Settings). Created by migration
+  `20260721000000_create_avatars_bucket.sql`.
+- `receipts` — expense receipt images/PDFs (the `expenses.receipt_url`
+  column already exists in the schema; no client UI writes to it yet).
+  Created by migration `20260723000002_create_receipts_bucket.sql`.
+
+Both run automatically with `supabase db push` — no separate
+`supabase storage buckets create` step needed.
