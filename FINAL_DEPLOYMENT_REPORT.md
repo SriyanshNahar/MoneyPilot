@@ -1,27 +1,55 @@
-# MoneyPilot v2.2 — Final Deployment Report
+# MoneyPilot — Final Deployment Report
 
-_Latest pass: Upcoming Expenses header/button is now a 1:1 mirror of Personal Events (shared reusable component). Earlier v2.2 passes kept below for history._
+_Latest pass: app-wide premium dropdown redesign, transparent system nav bar, Profile rename, Codemagic single-APK workflow. Earlier passes kept below as history._
 
 ## Repository
 
 - **Repository**: `SriyanshNahar/MoneyPilot`
 - **Branch**: `main`
-- **Commit Hash**: `91fab23f969c3de7daddfc8328cd80d621026dac`
+- **Commit Hash**: `1b0d12f01434449987a056a14863f9c2b5406249`
 - **Commit Message**:
   ```
-  feat: Match Upcoming Expenses section with Personal Events UI and improve Home Page consistency
+  feat: premium dropdown redesign, transparent system nav bar, Profile rename, Codemagic single-APK workflow
   ```
 
 ## What shipped in this pass
 
-This resolves the deviation flagged in the previous report — the "Add Expense" action now lives in the section header itself, exactly where "Add Event" lives on Personal Events, using one shared component ([dashboard_screen.dart](lib/features/dashboard/dashboard_screen.dart)):
+### 1. Dropdown redesign (every dropdown in the app)
+New shared widgets in `lib/core/widgets/`:
+- **`premium_dropdown.dart`** (`PremiumDropdownField<T>`) — flat dropdown: forced white background/black text regardless of light/dark theme, rounded 16px corners, soft shadow on the closed field, white popup menu with the same radius/elevation. Used for: sub-category and payment method in the Add Expense/Event form, and the Type/Loan type/Billing cycle fields in the Investments/Loans/Subscriptions forms.
+- **`grouped_dropdown.dart`** (`GroupedDropdownField`, pre-existing, restyled) — same white/black/rounded/shadow treatment, plus section headings are now larger and bold black (was small grey uppercase) with normal-weight black items underneath, matching your exact example (`INVESTMENTS` / `SIP, Step-Up SIP, ...`). Also gained a `leadingItems` option for rows that sit above any group (used for "All categories"). Used for: Money Lab's calculator picker, the Expense/Event category picker, and — newly converted from a flat ungrouped dropdown — the **Activity page's category filter**, now grouped the same way as the Add Expense category picker (by category group, e.g. Daily/Utilities/...), with "All categories" as a leading option.
+- The Home page day-filter dropdown (`_WindowPicker`) already used this exact white/black/rounded/shadow style from an earlier pass — it was the reference implementation, so no change was needed there.
+- No dropdown's functionality changed — same values, same `onChanged` callbacks, same navigation.
 
-- **`_SectionHeader` now takes `actionLabel`/`onAction`** instead of a generic `trailing` widget, and builds the same tinted action chip internally when both are supplied — matching the requested `SectionHeader(icon, title, subtitle, buttonText, onPressed)` shape.
-- **`_AddEventLink` generalized into `_HeaderActionChip(label, onPressed)`** — the exact same `TextButton.icon`, background tint, padding, and `minimumSize` as before, just parameterized so "Add Event" and "Add Expense" render pixel-identically (same height, radius, color, font, icon size/spacing, ripple) with only the label and destination differing.
-- **Upcoming Expenses header** now uses `Symbols.receipt_long_rounded` (Material Symbols Rounded, replacing the old plain `Icons.calendar_month_outlined`), subtitle "Bills, EMIs & scheduled expenses", and the new action chip wired to the same `/expenses/new?type=expense` navigation as before.
-- **Day Filter dropdown** stays where the previous pass put it — a standalone row above the helper text — since this request didn't ask to move it back, only to fix the header/button.
-- **Helper text row simplified** — the button that used to sit beside "Filter applies to..." moved into the header chip, so that row is now just the plain text again (no more responsive row/column branching, since there's nothing left to lay out beside it).
-- **Empty state copy updated** to match this request's exact example: "Bills, EMIs & scheduled expenses will appear here." (previously "Keep track of your upcoming bills and scheduled expenses."). Icon, card structure, and CTA style were already mirroring Personal Events from the prior pass.
+### 2. Bottom nav — extra white background behind the floating bar
+Root cause: Android was drawing its own opaque system-navigation-bar background because the app never requested edge-to-edge / a transparent system bar (`windowDrawsSystemBarBackgrounds` was already `false`, but nothing told Android what color to use instead, so it fell back to its own default, showing as a plain layer behind the floating pill). Fixed with two changes, not a navbar redesign:
+- `main.dart`: `SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge)` at startup.
+- `app.dart`: `MaterialApp.router`'s `builder` now wraps content in `AnnotatedRegion<SystemUiOverlayStyle>` with `systemNavigationBarColor`/`statusBarColor` set to transparent, with icon brightness reactively following the current light/dark theme.
+- The nav bar's own widget code (`app_shell.dart`) was **not touched** — same design, same spacing, same animation.
+
+### 3. Profile rename
+`settings_screen.dart`: the page header text changed from "Settings" to "Profile" — that's the only change. Route (`/settings`), class names (`SettingsScreen`), and all business logic are untouched, per your instruction. (The bottom-nav tab already said "Profile" from an earlier pass, so this makes the page's own header consistent with it.)
+
+### 4–5. Google Sign-In / Supabase
+Re-verified live against the Supabase project (not just recalled from memory): `GET /auth/v1/authorize?provider=google` on `rfrddfjtmrtfhqlvvqzf.supabase.co` still returns `400 — "Unsupported provider: missing OAuth secret"`. Also re-checked the Flutter client (`auth_screen.dart`'s `signInWithOAuth(OAuthProvider.google, redirectTo: oauthRedirectUrl, ...)`) and both platforms' deep-link registration (`AndroidManifest.xml`, `Info.plist`) — all correct and unchanged, confirming this is **100% a Supabase Dashboard configuration gap**, not a Flutter code issue. **No code was changed for this.** Exact steps to fix it, in the Supabase Dashboard (no migration, same Supabase project, same architecture):
+
+1. **Google Cloud Console** (console.cloud.google.com) → APIs & Services → Credentials → Create Credentials → OAuth client ID → Application type **Web application**.
+2. Under **Authorized redirect URIs**, add exactly: `https://rfrddfjtmrtfhqlvvqzf.supabase.co/auth/v1/callback`
+3. Copy the generated **Client ID** and **Client Secret**.
+4. **Supabase Dashboard** → your project → Authentication → Providers → Google → paste the Client ID and Client Secret into those fields (the toggle is already ON, it's just missing these two values) → Save.
+5. No database change, no new tables, nothing to migrate — this is purely filling in two text fields Supabase already has slots for.
+
+Once step 4 is saved, the exact same `signInWithOAuth` call already in the app will work without any further code changes.
+
+### 6. Codemagic — single APK per build
+No `codemagic.yaml` existed before (the project was presumably building from Codemagic's UI-configured default Flutter workflow, which is why extra artifacts were showing up — Codemagic's default template glob picks up every APK under `build/`, including intermediate/plugin outputs). Added `codemagic.yaml` at the repo root with two explicit workflows:
+- **`android-debug`** — triggers on every push to `main`, runs `flutter analyze` → `flutter test` → `flutter build apk --debug`, and publishes **only** `build/app/outputs/flutter-apk/app-debug.apk` as the artifact (an explicit path, not a wildcard).
+- **`android-release`** — triggers on version tags (`v*.*.*`), same analyze/test gate, builds `flutter build apk --release`, publishes **only** `app-release.apk`. Signing is wired to Codemagic's managed "Code signing identities" feature (referenced as `moneypilot_upload_keystore`) with a script that reconstructs `android/key.properties` from the environment variables Codemagic exports for that identity — since the real keystore and `key.properties` are (correctly) gitignored and were never in the repo for Codemagic to check out.
+
+**I could not verify this against the actual Codemagic dashboard/API** — I have no login or API access to Codemagic from this environment, so I cannot confirm the GitHub repo is connected to a Codemagic app, that a webhook fires on push, or that this file will be picked up. Manual steps you'll need to do on your end:
+1. Confirm (or create) a Codemagic app connected to `SriyanshNahar/MoneyPilot` — Codemagic auto-detects `codemagic.yaml` at the repo root once connected and switches from UI-configured to config-as-code workflows.
+2. For the release workflow to actually sign successfully: Codemagic → Team settings → Code signing identities → Android → upload `moneypilot-upload.jks` there, name the identity `moneypilot_upload_keystore` (or update the yaml if you name it differently), and supply the store/key passwords + alias when prompted.
+3. Trigger a push (or a `v*.*.*` tag) and confirm in the Codemagic dashboard that exactly one APK artifact is produced.
 
 ## Final Verification
 
@@ -29,50 +57,46 @@ This resolves the deviation flagged in the previous report — the "Add Expense"
 |---|---|
 | `flutter analyze` | ✅ **0 issues** |
 | `flutter test` | ✅ **3/3 passed** |
-| `flutter build apk --release` | ✅ Built `app-release.apk` (58.8MB) |
-
-Release signing re-verified with `apksigner verify --print-certs`: SHA-256 `06bf698cddd3162447ebc0b1b9941673aea78d2f5eb85ac1facfd0dbd22732bc` — matches the project's known upload keystore fingerprint.
+| `flutter build apk --debug` | ✅ Built `app-debug.apk` |
 
 ## Git Review (before commit)
 
-- Only one file changed (`lib/features/dashboard/dashboard_screen.dart`) — full diff reviewed directly.
-- Scanned for `TODO`/`FIXME`, stray `print()`, and secret-shaped strings (`sk-ant`, `rzp_live`, `rzp_test`, inline `api_key=`/`password=`) — **zero matches**.
-- Re-confirmed `scripts/secrets.env` is still gitignored via `git check-ignore`.
+- 9 modified files + 2 new files (`codemagic.yaml`, `lib/core/widgets/premium_dropdown.dart`) — full diff reviewed.
+- Scanned for `TODO`/`FIXME`, stray `print()`, and secret-shaped strings (`sk-ant`, `rzp_live`, `rzp_test`, inline `api_key=`/`password=`) across the Dart diff **and** the new `codemagic.yaml` — **zero matches**.
+- Re-confirmed `scripts/secrets.env`, `android/key.properties`, and the `.jks` keystore are all still gitignored (`git check-ignore`) and were not part of this commit.
 - `flutter analyze`'s zero-issues result rules out unused imports.
 
 ## Push to GitHub
 
-- **Push status**: ✅ Succeeded (`5bf7c95..91fab23 main -> main`)
+- **Push status**: ✅ Succeeded (`f97cc93..1b0d12f main -> main`)
 - **Synchronization verified three independent ways**:
-  - Local `git rev-parse HEAD` → `91fab23f969c3de7daddfc8328cd80d621026dac`
-  - `git ls-remote origin main` → `91fab23f969c3de7daddfc8328cd80d621026dac`
-  - GitHub REST API (`/repos/SriyanshNahar/MoneyPilot/commits/main`) → `91fab23f969c3de7daddfc8328cd80d621026dac`
+  - Local `git rev-parse HEAD` → `1b0d12f01434449987a056a14863f9c2b5406249`
+  - `git ls-remote origin main` → `1b0d12f01434449987a056a14863f9c2b5406249`
+  - GitHub REST API (`/repos/SriyanshNahar/MoneyPilot/commits/main`) → `1b0d12f01434449987a056a14863f9c2b5406249`
 - All three match. Repository is synchronized; branch `main` is up to date.
+
+## Codemagic Verification
+
+**Not independently verifiable from this environment** — no Codemagic dashboard/API access here. See the manual steps under "Codemagic — single APK per build" above.
 
 ## Remaining Manual Deployment Steps
 
-Unchanged from the previous [FINAL_VERIFICATION.md](FINAL_VERIFICATION.md) — this pass was UI-only, no backend work was in scope:
-
-1. Nothing backend-related is live: all 4 Supabase Edge Functions (`ai-chat`, `razorpay-create-order`, `razorpay-verify-payment`, `razorpay-webhook`) return `404` on the live project, and the `goals`, `ai_chat_messages`, `plan_subscriptions` tables (plus `profiles.plan_expires_at`) don't exist yet.
-2. Run `supabase db push` and `supabase functions deploy <name>` for each function once linked (`supabase login` + `supabase link --project-ref rfrddfjtmrtfhqlvvqzf`).
-3. Push `ANTHROPIC_API_KEY` and the Razorpay keys via `supabase secrets set --env-file scripts/secrets.env`; still need to generate and set `RAZORPAY_WEBHOOK_SECRET`.
-4. This layout (and the floating bottom nav from an earlier pass) has **not been visually verified live** — both are only reachable behind login, and I have deliberately not re-authenticated as your real account again this session. Please check the Home page in person on an actual device/emulator.
+1. **Google Sign-In**: fill in the Client ID/Secret in Supabase Dashboard → Authentication → Providers → Google, per the exact steps above.
+2. **Codemagic**: connect the repo (if not already), upload the keystore as `moneypilot_upload_keystore`, and confirm a build.
+3. Still outstanding from earlier reports, unchanged by this UI-only pass: Supabase Edge Functions (`ai-chat`, `razorpay-*`) and the `goals`/`ai_chat_messages`/`plan_subscriptions` migrations are not yet deployed to the live project (`supabase db push` / `supabase functions deploy` / `supabase secrets set --env-file scripts/secrets.env`).
+4. None of this pass's visual changes (dropdowns, nav bar transparency) have been eyes-on verified on a live device — all are behind login, and I have deliberately not re-authenticated as your real account this session.
 
 ## Not Yet Marked Complete
 
-This project is **not** being marked "complete" — the backend deployment steps above are still outstanding, and this layout is code-reviewed but not eyes-on verified. Everything requested in this specific pass (shared header component, header/button 1:1 match, verification, git hygiene, commit, push, this report) is done and pushed.
+This project is **not** being marked "complete" — Codemagic connectivity/keystore upload can't be verified from here, Google Sign-In still needs the two Supabase fields filled in, the backend deployment gaps remain, and none of this pass's UI changes have been eyes-on verified live. Everything I could implement, verify, commit and push from this environment is done.
 
 ---
 
-## History
+## History (prior passes, summarized)
 
-### Pass: mirror Upcoming Expenses onto Personal Events (commit `f34c57479318208df1554c7a8027697252be15ca`)
-First consistency pass: moved the Day Filter dropdown above the helper text, matched the section header structure and empty-state card to Personal Events. Deliberately left the header without a trailing chip at the time (button lived beside the helper text instead) to avoid three simultaneous Add-Expense entry points — **this is the deviation resolved by the current pass**, per explicit follow-up instruction to match the header 1:1.
-
-### Pass: reposition Add Expense button (commit `6cfa4521f3abb42db0ccf654bbfacb94ef73f9a0`)
-Moved "Add Expense" out of the Upcoming Expenses card list into a row beside the "Filter applies to..." helper text.
-
-### Pass: premium floating bottom navigation + UI polish (commits `5af5d90fafce017ac46b57021e90946b39950f5b`, `af1c26d8806f6737ee4d727d28bcf3718202d9d0`)
-Floating "bump" bottom nav — active tab's icon rises into a circular button overlapping the bar, Material Motion animation (280ms, no bounce), haptic feedback on tab switch. Also in that pass: rebuilt adaptive/monochrome/iOS/web app icons, quote-free splash screen, grouped-header dropdowns, Home quick-access row removal, typography weight cleanup.
+- **`f97cc93`** — Upcoming Expenses header made a 1:1 mirror of Personal Events (shared `_HeaderActionChip` + `_SectionHeader(actionLabel, onAction)`).
+- **`f34c574`** — First Upcoming Expenses/Personal Events consistency pass (day filter repositioned, empty state mirrored).
+- **`6cfa452`** — Add Expense button repositioned beside the day-filter helper text.
+- **`5af5d90` / `af1c26d`** — Premium floating bottom navigation (circular bump), adaptive/monochrome/iOS/web app icons, quote-free splash screen, grouped-header dropdowns (first version), Home quick-access row removal, typography weight cleanup.
 
 Each historical commit passed the same analyze/test/build/git-review/push verification described above at the time it was made.
