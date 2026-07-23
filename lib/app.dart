@@ -52,9 +52,16 @@ class _MoneyPilotAppState extends ConsumerState<MoneyPilotApp> {
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
             statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+            // Android 10+ still enforces its own contrast scrim on a
+            // "transparent" system nav bar unless this is explicitly turned
+            // off — without it, that scrim reads as a leftover translucent
+            // layer behind the floating nav bar even though the color is
+            // nominally transparent.
+            systemStatusBarContrastEnforced: false,
             systemNavigationBarColor: Colors.transparent,
             systemNavigationBarDividerColor: Colors.transparent,
             systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+            systemNavigationBarContrastEnforced: false,
           ),
           child: child!,
         );

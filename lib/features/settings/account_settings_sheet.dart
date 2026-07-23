@@ -1,18 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
-import '../../core/local/local_prefs.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../auth/auth_controller.dart';
 
-/// Direct port of the NameEditForm in settings.tsx: first/middle/last name +
-/// a settings-only local profile photo (device-local, matches the React
-/// localStorage-backed `mp_settings_avatar_<uid>` behaviour).
+/// Direct port of the NameEditForm in settings.tsx: first/middle/last name.
+/// Profile photo editing lives only on the Profile page itself (real,
+/// Supabase-Storage-backed upload) — this sheet no longer has its own
+/// separate, device-local photo control, so there is exactly one place to
+/// change the profile picture.
 class AccountSettingsSheet extends ConsumerStatefulWidget {
   const AccountSettingsSheet({super.key, required this.onSaved});
   final VoidCallback onSaved;
@@ -27,7 +24,6 @@ class _AccountSettingsSheetState extends ConsumerState<AccountSettingsSheet> {
   final _last = TextEditingController();
   bool _loading = true;
   bool _saving = false;
-  String? _localAvatarPath;
 
   String get _uid => ref.read(authControllerProvider).user!.id;
 
@@ -38,11 +34,9 @@ class _AccountSettingsSheetState extends ConsumerState<AccountSettingsSheet> {
   }
 
   Future<void> _load() async {
-    final path = await LocalPrefs.getLocalAvatarPath(_uid);
     final profile = await const ProfileRepository().fetchFull(_uid);
     if (!mounted) return;
     setState(() {
-      _localAvatarPath = path;
       if (profile != null) {
         _first.text = profile.firstName ?? '';
         _middle.text = profile.middleName ?? '';
@@ -56,22 +50,6 @@ class _AccountSettingsSheetState extends ConsumerState<AccountSettingsSheet> {
       }
       _loading = false;
     });
-  }
-
-  Future<void> _pickLocalAvatar() async {
-    final picker = ImagePicker();
-    final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
-    if (file == null) return;
-    final dir = await getApplicationDocumentsDirectory();
-    final dest = '${dir.path}/settings_avatar_$_uid.jpg';
-    await File(file.path).copy(dest);
-    await LocalPrefs.setLocalAvatarPath(_uid, dest);
-    if (mounted) setState(() => _localAvatarPath = dest);
-  }
-
-  Future<void> _clearLocalAvatar() async {
-    await LocalPrefs.clearLocalAvatar(_uid);
-    if (mounted) setState(() => _localAvatarPath = null);
   }
 
   String get _fullName => [_first.text, _middle.text, _last.text].map((s) => s.trim()).where((s) => s.isNotEmpty).join(' ');
@@ -114,47 +92,7 @@ class _AccountSettingsSheetState extends ConsumerState<AccountSettingsSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Account Settings', style: TextStyle(fontSize: 19, fontWeight: FontWeight.w700)),
-          Text('Update your name and profile photo shown here.', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(18)),
-            child: Row(children: [
-              GestureDetector(
-                onTap: _pickLocalAvatar,
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundColor: colors.card,
-                  backgroundImage: _localAvatarPath != null ? FileImage(File(_localAvatarPath!)) : null,
-                  child: _localAvatarPath == null
-                      ? Text(_fullName.isNotEmpty ? _fullName[0].toUpperCase() : 'M', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.primary))
-                      : null,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Profile photo', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
-                    Text('This photo is shown only in Settings.', style: TextStyle(fontSize: 13, color: colors.mutedForeground)),
-                    const SizedBox(height: 6),
-                    Row(children: [
-                      TextButton(onPressed: _pickLocalAvatar, style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap), child: Text(_localAvatarPath != null ? 'Change' : 'Add photo', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700))),
-                      if (_localAvatarPath != null) ...[
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: _clearLocalAvatar,
-                          style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap, foregroundColor: Theme.of(context).colorScheme.error),
-                          child: const Text('Remove', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
-                        ),
-                      ],
-                    ]),
-                  ],
-                ),
-              ),
-            ]),
-          ),
+          Text('Update your name.', style: TextStyle(fontSize: 14, color: colors.mutedForeground)),
           const SizedBox(height: 16),
           Text('FIRST NAME', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.mutedForeground, letterSpacing: 0.4)),
           const SizedBox(height: 6),

@@ -195,7 +195,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: 20),
 
           _SectionGroup(title: 'Account', children: [
-            _row(Icons.person_outline, 'Account', 'Name and profile photo', scheme.primary, () => _openSheet(AccountSettingsSheet(onSaved: () {
+            _row(Icons.person_outline, 'Account', 'Name', scheme.primary, () => _openSheet(AccountSettingsSheet(onSaved: () {
                   Navigator.pop(context);
                   _load();
                 }))),

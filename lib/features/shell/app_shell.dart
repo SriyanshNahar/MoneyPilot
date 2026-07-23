@@ -32,6 +32,7 @@ class AppShell extends StatelessWidget {
     final location = GoRouterState.of(context).matchedLocation;
 
     return Scaffold(
+      extendBody: true,
       body: Stack(
         children: [
           SafeArea(
